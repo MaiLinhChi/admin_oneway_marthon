@@ -50,12 +50,12 @@ class App extends Component {
       { key: KEY_STORE.SET_USER, action: storageActions.setUserData, init: init.userData },
       { key: KEY_STORE.SET_SETTING, action: storageActions.setSetting, init: init.setting }
     ]
-    
+
     const promiseArr = storageRedux.map((item) => {
       return checkLocalStoreToRedux(store, item.key, item.action, item.init)
     })
     const initDataPromiseArr = [
-      ReduxServices.getSettings(),
+      // ReduxServices.getSettings(),
       ReduxServices.refreshUserBalance(),
       ReduxServices.refreshTomoPrice()
     ]

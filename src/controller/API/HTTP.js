@@ -3,7 +3,7 @@ import QueryString from 'query-string';
 import axios from 'axios';
 import { Promise } from 'q';
 
-export default class TomoFinance {
+export default class HTTP {
   /**
    * user login
    */

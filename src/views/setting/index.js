@@ -1,8 +1,25 @@
 import React, { useState } from 'react'
-import { CButton, CCard, CCardBody, CCardHeader, CCol, CForm, CFormGroup, CLabel, CInput, CInputGroup, CInputGroupPrepend, CInputGroupText, CRow, CInvalidFeedback } from '@coreui/react'
+import {
+  CButton,
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCol,
+  CForm,
+  CFormGroup,
+  CLabel,
+  CInput,
+  CInputGroup,
+  CInputGroupPrepend,
+  CInputGroupText,
+  CRow,
+  CInvalidFeedback,
+  CLink
+} from '@coreui/react'
 import CIcon from '@coreui/icons-react';
 import TomoFinanceServices from 'src/controller/API/HTTP'
-import { showNotification } from 'src/common/function';
+import {detectAddress, showNotification} from 'src/common/function';
+import {ellipsisAddress} from "../../helper/addressHelper";
 
 const Account = () => {
   const [oldPassword, setOldPassword] = useState('');
@@ -38,7 +55,7 @@ const Account = () => {
       <CCol xs="12" sm="6">
         <CCard>
           <CCardHeader>
-            Change password
+            <b>Contract: </b>{<CLink href={detectAddress(process.env.REACT_APP_CONTRACT)} target="_blank">{process.env.REACT_APP_CONTRACT}</CLink>}
           </CCardHeader>
           <CCardBody>
             <CForm >

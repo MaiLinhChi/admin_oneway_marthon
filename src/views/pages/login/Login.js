@@ -17,7 +17,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { getDataLocal, saveDataLocal } from 'src/common/function'
-import TomoFinanceServices from 'src/controller/API/TomoFinance'
+import TomoFinanceServices from 'src/controller/API/HTTP'
 
 const Login = () => {
   let history = useHistory()

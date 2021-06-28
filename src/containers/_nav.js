@@ -169,6 +169,18 @@ const _nav =  [
   // },
   {
     _tag: 'CSidebarNavItem',
+    name: 'Bets',
+    to: '/bets',
+    icon: <CIcon name="cil-list" customClasses="c-sidebar-nav-icon"/>
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Setting',
+    to: '/setting',
+    icon: <CIcon name="cil-settings" customClasses="c-sidebar-nav-icon"/>
+  },
+  {
+    _tag: 'CSidebarNavItem',
     name: 'Account',
     to: '/account',
     icon: <CIcon name="cil-star" customClasses="c-sidebar-nav-icon"/>

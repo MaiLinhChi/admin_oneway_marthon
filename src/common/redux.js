@@ -1,6 +1,6 @@
 import storeRedux from 'src/controller/Redux/store/configureStore'
 import Web3Services from 'src/controller/Web3'
-import TomoFinanceServices from 'src/controller/API/TomoFinance'
+import TomoFinanceServices from 'src/controller/API/HTTP'
 import StorageActions from 'src/controller/Redux/actions/storageActions'
 import PageReduxAction from 'src/controller/Redux/actions/pageActions'
 import { METAMASK_INFO, CONTRACT } from 'src/common/constants'
@@ -191,7 +191,7 @@ export default class ReduxServices {
             const { metamaskRedux } = storeRedux.getState()
             const { settingRedux } = storeRedux.getState()
             const address = metamaskRedux.account
-            let msgHash = settingRedux.messageHash || 'TomoFinance'
+            let msgHash = settingRedux.messageHash || 'HTTP'
             let content = await Web3Services.onSignMessage(address, msgHash)
             if (content && content.address && content.signature) {
               let newMetaMask = Object.assign({}, metamaskRedux)

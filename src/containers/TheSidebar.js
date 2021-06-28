@@ -23,8 +23,9 @@ const TheSidebar = ({sidebarShow, setSidebarShow}) => {
       <CSidebarBrand className="d-md-down-none" to="/">
         <CImg
           src={'logo.svg'}
-          width={'150'}
+          // width={'150'}
         />
+        <h5 style={{marginLeft: 10, color: '#fff', fontWeight: 'bold'}}>Binary Option</h5>
       </CSidebarBrand>
       <CSidebarNav>
 
