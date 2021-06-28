@@ -150,8 +150,6 @@ export default class MetaMaskServices {
     const address = accounts[0]
     const callbackSignIn = async () => {
       Observer.emit(OBSERVER_KEY.ALREADY_SIGNED)
-      await ReduxServices.getUserStakeDataDetail();
-      await ReduxServices.getUserUnstakedDataDetail();
     }
     await this.getNetworkAndChainId()
     // update redux state
