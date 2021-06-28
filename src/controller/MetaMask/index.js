@@ -96,9 +96,6 @@ export default class MetaMaskServices {
       accounts,
       address
     })
-    
-    ReduxServices.callDispatchAction(PageReduxAction.setUserStakingData([]))
-    ReduxServices.callDispatchAction(PageReduxAction.setUserUnstakedData([]))
   }
 
   static async addNewChain (chainID) {
