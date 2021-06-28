@@ -3,11 +3,20 @@ import { METAMASK_INFO } from 'src/common/constants'
 var initState = {
   lang: 'en',
   userData: null,
+  connectionMethod: null,
   metamaskRedux: {
-    status: METAMASK_INFO.status.Loading,
     network: 0,
-    account: ''
+    accounts: [],
+    address: ''
   },
+  walletConnect: {
+    connector: {},
+    chainId: 0,
+    accounts: [],
+    address: '',
+    session: {}
+  },
+  transferData: {},
   balanceRedux: {
     balanceTOMO: 0,
     balanceTAI: 0,
@@ -15,6 +24,7 @@ var initState = {
   },
   internet: true,
   isloading: true,
+  tokensRedux: [],
   setting: {},
   tomoPrice: 0
 }

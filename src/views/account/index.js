@@ -3,6 +3,9 @@ import { CButton, CCard, CCardBody, CCardHeader, CCol, CForm, CFormGroup, CLabel
 import CIcon from '@coreui/icons-react';
 import TomoFinanceServices from 'src/controller/API/HTTP'
 import { showNotification } from 'src/common/function';
+import { OBSERVER_KEY } from 'src/common/constants';
+import Observer from 'src/common/observer';
+import ReduxServices from 'src/common/redux';
 
 const Account = () => {
   const [oldPassword, setOldPassword] = useState('');
@@ -11,7 +14,17 @@ const Account = () => {
   const [isMatch, setIsMatch] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const handleSignIn = () => {
+    Observer.emit(OBSERVER_KEY.SIGN_IN);
+  };
+
   const onSubmit = async () => {
+    let isSigned = ReduxServices.checkIsSigned()
+    if(!isSigned){
+      handleSignIn()
+      return
+    }
+
     setLoading(true);
     try {
       const res = await TomoFinanceServices.changePassword(oldPassword, newPassword);

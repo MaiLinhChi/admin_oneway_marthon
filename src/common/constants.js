@@ -79,7 +79,7 @@ export const WEB3_RPC = {
 }
 
 export const CONNECTION_METHOD = {
-  PANTOGRAPH: 'PANTOGRAPH',
+  METAMASK: 'METAMASK',
   WALLET_CONNECT: 'WALLET_CONNECT'
 }
 
@@ -139,4 +139,29 @@ export const CONTRACTS_NAME = {
   VOTER_ADDRESS70: 'VOTER_address70',
   TAKE_INTERESTOR: 'takeInterestor',
   LIQUIDATIOR: 'Liquidatior'
+}
+
+export const BSC_RPC = {
+  56: {
+    rpcUrls: ['https://bsc-dataseed.binance.org'],
+    chainId: '0x38',
+    chainName: 'Binance Smart Chain Mainnet',
+    nativeCurrency: {
+      name: 'Binance',
+      symbol: 'BNB',
+      decimals: 18
+    },
+    blockExplorerUrls: ['https://bscscan.com']
+  },
+  97: {
+    rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
+    chainId: '0x61',
+    chainName: 'Binance Smart Chain Testnet',
+    nativeCurrency: {
+      name: 'Binance',
+      symbol: 'BNB',
+      decimals: 18
+    },
+    blockExplorerUrls: ['https://testnet.bscscan.com']
+  }
 }

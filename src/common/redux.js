@@ -1,10 +1,13 @@
 import storeRedux from 'src/controller/Redux/store/configureStore'
 import Web3Services from 'src/controller/Web3'
 import TomoFinanceServices from 'src/controller/API/HTTP'
+import MetaMaskServices from 'src/controller/MetaMask'
+import WalletConnectServices from 'src/controller/WalletConnect'
 import StorageActions from 'src/controller/Redux/actions/storageActions'
 import PageReduxAction from 'src/controller/Redux/actions/pageActions'
 import { METAMASK_INFO, CONTRACT } from 'src/common/constants'
-import { showNotification, checkIsSigned } from 'src/common/function'
+import { showNotification, checkIsSigned, lowerCase, getCurrentBrowserLanguage } from 'src/common/function'
+import { CONNECTION_METHOD } from './constants'
 
 export default class ReduxServices {
   static async callDispatchAction (action) {
@@ -17,6 +20,19 @@ export default class ReduxServices {
       return 'Bearer ' + userData.token
     } else {
       return ''
+    }
+  }
+
+  static async detectConnectionMethod () {
+    const { connectionMethod } = storeRedux.getState()
+
+    switch (connectionMethod) {
+    case CONNECTION_METHOD.METAMASK:
+      await MetaMaskServices.refresh()
+      break
+    case CONNECTION_METHOD.WALLET_CONNECT:
+      WalletConnectServices.refresh()
+      break
     }
   }
 
@@ -194,50 +210,46 @@ export default class ReduxServices {
             let msgHash = settingRedux.messageHash || 'HTTP'
             let content = await Web3Services.onSignMessage(address, msgHash)
             if (content && content.address && content.signature) {
+
               let newMetaMask = Object.assign({}, metamaskRedux)
               ReduxServices.callDispatchAction(PageReduxAction.setMetamask(newMetaMask))
-              let newUserLogin = Object.assign({}, { address: content.address, sig: content.signature, isSigned: true })
-              await ReduxServices.callDispatchAction(StorageActions.setUserData(newUserLogin))
-              await ReduxServices.refreshUserBalance()
-              callback && callback(newUserLogin)
+              let newUserLogin = Object.assign({}, { address: metamaskRedux.address, sig: content, isSigned: true })
+              ReduxServices.callDispatchAction(StorageActions.setUserData(newUserLogin))
+              ReduxServices.refreshUserBalance()
+              callback && callback()
               return resolve()
             } else {
-              showNotification('Please activate wallet first.')
-              // alert(2)
+              showNotification(messages.txtWarningActiveMetaMask)
               ReduxServices.callDispatchAction(StorageActions.setUserData({}))
               callbackErr && callbackErr()
               return resolve()
             }
           } catch (error) {
-            showNotification('Please activate wallet first.')
+            showNotification(messages.txtWarningSigninMetaMaskError)
             reject(error)
           }
         })
       }
 
-      const { metamaskRedux, userData } = storeRedux.getState()
-      let currentWeb3 = window.tomoWeb3
+      const { metamaskRedux, locale } = storeRedux.getState()
+      const { messages } = locale
+      let currentWeb3 = window.ethereum
       try {
-        if (!currentWeb3) {
-          showNotification('Please install Pantograph first.')
-          return resolve(null)
-        }
         // Check if MetaMask is installed
-        if (metamaskRedux.status === METAMASK_INFO.status.NoWeb3) {
-          showNotification('Please install Pantograph first.')
+        if (!currentWeb3) {
+          showNotification(messages.txtWarningInstallMetaMask)
           return resolve(null)
         }
 
         // check network allowed
-        const findNetwork = METAMASK_INFO.network[parseInt(process.env.REACT_APP_NETWORK_ID)]
-        let network = findNetwork || 'Unknown'
-        if (metamaskRedux.status === METAMASK_INFO.status.Ready && metamaskRedux.network !== network) {
-          showNotification('Network is not matched. Please check the network of your application.')
-          return resolve(null)
+        const findNetwork = parseInt(process.env.REACT_APP_CHAIN_ID)
+        let network = findNetwork || 0
+        if (metamaskRedux.network !== network) {
+          await MetaMaskServices.addNewChain(network)
         }
 
-        if (metamaskRedux.account) {
-          let isSigned = checkIsSigned(userData, metamaskRedux)
+        if (metamaskRedux.accounts) {
+          let isSigned = ReduxServices.checkIsSigned()
           if (!isSigned) {
             signMetaMask(callback)
           } else {
@@ -245,10 +257,10 @@ export default class ReduxServices {
             return resolve(null)
           }
         } else {
-          this.onEnableMetaMask(() => signMetaMask(callback))
           return resolve(null)
         }
       } catch (error) {
+        callbackErr && callbackErr()
         return resolve(error)
       }
     })
@@ -287,6 +299,38 @@ export default class ReduxServices {
     ReduxServices.callDispatchAction(PageReduxAction.setTomoPrice(tomoPrice))
   }
 
+  static checkIsSigned () {
+    const { userData, metamaskRedux, walletConnect, connectionMethod } = storeRedux.getState()
+    if (userData && userData.address) {
+      switch (connectionMethod) {
+      case CONNECTION_METHOD.METAMASK:
+        return userData.isSigned && lowerCase(metamaskRedux.address) === lowerCase(userData.address)
+      case CONNECTION_METHOD.WALLET_CONNECT:
+        return userData.isSigned && lowerCase(walletConnect.address) === lowerCase(userData.address)
+      default:
+        return false
+      }
+    }
+    return false
+  }
 
+  static detectBrowserLanguage () {
+    const lang = window.pantographLanguage || getCurrentBrowserLanguage()
+    ReduxServices.callDispatchAction(StorageActions.setLocale(lang))
+  }
+
+  static getMetaMask () {
+    const { metamaskRedux } = storeRedux.getState()
+    return metamaskRedux
+  }
+
+  static async updateMetaMask (data) {
+    const { metamaskRedux } = storeRedux.getState()
+    let newMetaMask = {
+      ...metamaskRedux,
+      ...data
+    }
+    ReduxServices.callDispatchAction(PageReduxAction.setMetamask({ ...newMetaMask }))
+  }
 }
 
