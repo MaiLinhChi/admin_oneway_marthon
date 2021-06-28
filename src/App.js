@@ -9,6 +9,7 @@ import store from 'src/controller/Redux/store/configureStore'
 import init from 'src/controller/Redux/lib/initState'
 import 'antd/dist/antd.min.css'
 import './scss/style.scss';
+import { getDataLocal } from 'src/common/function'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -31,39 +32,51 @@ class App extends Component {
     this.currentInterval = null
   }
   async componentDidMount () {
-    const tomochain = window.tomoWeb3
-    if (tomochain) {
-      ReduxServices.refreshMetaMask()
-      tomochain.currentProvider.on('accountsChanged', function (accounts) {
-        ReduxServices.refreshMetaMask()
-        Observer.emit(OBSERVER_KEY.CHANGED_ACCOUNT)
+    try {
+      if (process.env.MAINTENANCE_MODE === 'true') {
+        this.setState({
+          isLoading: false
+        })
+        return
+      }
+      const storageRedux = [
+        { key: KEY_STORE.SET_LOCALE, action: storageActions.setLocale, init: init.lang },
+        { key: KEY_STORE.SET_CONNECTION_METHOD, action: storageActions.setConnectionMethod, init: init.connectionMethod },
+        { key: KEY_STORE.SET_USER, action: storageActions.setUserData, init: init.userData },
+        { key: KEY_STORE.SET_TRANSFER_DATA, action: storageActions.setTransferData, init: init.transferData },
+        { key: KEY_STORE.SET_SETTING, action: storageActions.setSetting, init: init.setting },
+        { key: KEY_STORE.SET_CART, action: storageActions.setCart, init: init.cart },
+        { key: KEY_STORE.SET_TOKENS, action: storageActions.setTokens, init: init.tokensRedux },
+        { key: KEY_STORE.SET_GIFT_CARDS, action: storageActions.setGiftCards, init: init.giftCards },
+        { key: KEY_STORE.SET_PAYMENT_DATA, action: storageActions.setPaymentData, init: init.paymentData }
+      ]
+
+      const promiseArr = storageRedux.map((item) => {
+        checkLocalStoreToRedux(store, item.key, item.action, item.init)
       })
-      tomochain.currentProvider.on('networkChanged', function (accounts) {
-        ReduxServices.refreshMetaMask()
-        ReduxServices.resetUser()
-      })
-      tomochain.currentProvider.on('chainChanged', function (accounts) {
-        ReduxServices.refreshMetaMask()
+      await Promise.all(promiseArr)
+
+      // in the case reload page: need to wait for detect connection method already in use before showing page
+      await ReduxServices.detectConnectionMethod()
+
+      const initDataPromiseArr = [
+        ReduxServices.detectBrowserLanguage(),
+        ReduxServices.getSettings(),
+        ReduxServices.refreshUserBalance()
+      ]
+
+      if (getDataLocal(KEY_STORE.SET_SETTING)) {
+        // data is already in local store, don't need to wait for get init data
+        Promise.all(initDataPromiseArr)
+      } else {
+        // if user access the fisrt time and don't have data in local store
+        await Promise.all(initDataPromiseArr)
+      }
+    } finally {
+      this.setState({
+        isLoading: false
       })
     }
-    const storageRedux = [
-      { key: KEY_STORE.SET_USER, action: storageActions.setUserData, init: init.userData },
-      { key: KEY_STORE.SET_SETTING, action: storageActions.setSetting, init: init.setting }
-    ]
-    
-    const promiseArr = storageRedux.map((item) => {
-      return checkLocalStoreToRedux(store, item.key, item.action, item.init)
-    })
-    const initDataPromiseArr = [
-      ReduxServices.getSettings(),
-      ReduxServices.refreshUserBalance(),
-      ReduxServices.refreshTomoPrice()
-    ]
-    Promise.all([...promiseArr, ...initDataPromiseArr])
-
-    this.currentInterval = setInterval(() => {
-      ReduxServices.refreshTomoPrice()
-    }, 5000)
   }
   componentWillUnmount () {
     clearInterval(this.currentInterval)

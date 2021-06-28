@@ -155,3 +155,27 @@ export const validateNumber = (strNumber) => {
   return reg.test(scientificToDecimal(strNumber))
 }
 
+export const getCurrentBrowserLanguage = () => {
+  let language = navigator.language.toLowerCase()
+  switch (language) {
+  case 'en-us':
+  case 'en':
+    language = 'en'
+    break
+  case 'ja-jp':
+  case 'ja':
+  case 'jp':
+    language = 'ja'
+    break
+  case 'zh-cn':
+  case 'zh':
+  case 'cn':
+    language = 'cn'
+    break
+  case 'vi-vn':
+  case 'vi':
+    language = 'vi'
+    break
+  }
+  return language
+}

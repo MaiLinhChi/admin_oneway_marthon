@@ -25,4 +25,12 @@ export default class StorageActions {
       payload
     }
   }
+
+  static setConnectionMethod (payload) {
+    saveDataLocal(KEY_STORE.SET_CONNECTION_METHOD, payload)
+    return {
+      type: KEY_STORE.SET_CONNECTION_METHOD,
+      payload
+    }
+  }
 }
