@@ -204,13 +204,12 @@ export default class ReduxServices {
       const signMetaMask = (callback = null) => {
         return new Promise(async (resolve, reject) => {
           try {
-            const { metamaskRedux } = storeRedux.getState()
-            const { settingRedux } = storeRedux.getState()
-            const address = metamaskRedux.account
-            let msgHash = settingRedux.messageHash || 'HTTP'
-            let content = await Web3Services.onSignMessage(address, msgHash)
-            if (content && content.address && content.signature) {
-
+            const { metamaskRedux, settingRedux, locale } = storeRedux.getState()
+            const { messages } = locale
+            let msgHash = settingRedux.messageHash || 'Binary Option'
+            let content = await MetaMaskServices.signPersonalMessage(metamaskRedux.address, msgHash)
+            console.log('content', content, metamaskRedux.address);
+            if (content) {
               let newMetaMask = Object.assign({}, metamaskRedux)
               ReduxServices.callDispatchAction(PageReduxAction.setMetamask(newMetaMask))
               let newUserLogin = Object.assign({}, { address: metamaskRedux.address, sig: content, isSigned: true })

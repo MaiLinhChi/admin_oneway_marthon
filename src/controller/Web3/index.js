@@ -27,23 +27,27 @@ if (window.tomoWeb3) {
 }
 
 export default class Web3Services {
-  static async onSignMessage(address, nonce) {
-    return new Promise(function (resolve, reject) {
+  static async onSignMessage (address, nonce) {
+    let p1 = new Promise((resolve, reject) => {
       try {
-        let currentWeb3 = new Web3(web3Instance.currentProvider);
+        let currentWeb3 = new Web3(web3Instance.currentProvider)
         currentWeb3.eth.personal.sign(
           currentWeb3.utils.fromUtf8(nonce),
           address,
           (err, signature) => {
-            if (err) return reject(err);
-            return resolve({ address, signature });
-          },
-        );
+            if (err) return reject(err)
+            return resolve({ address, signature })
+          }
+        )
       } catch (e) {
-        console.log('Sign message error', e);
-        return resolve();
+        console.log('Sign message error', e)
+        return resolve()
       }
-    });
+    })
+    let p2 = new Promise(function (resolve, reject) {
+      setTimeout(() => reject(new Error('Request timeout')), 30000)
+    })
+    return Promise.race([p1, p2])
   }
 
   static callGetDataWeb3(contract, method, param) {
