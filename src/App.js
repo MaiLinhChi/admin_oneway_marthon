@@ -59,19 +59,6 @@ class App extends Component {
       // in the case reload page: need to wait for detect connection method already in use before showing page
       await ReduxServices.detectConnectionMethod()
 
-      const initDataPromiseArr = [
-        ReduxServices.detectBrowserLanguage(),
-        ReduxServices.getSettings(),
-        ReduxServices.refreshUserBalance()
-      ]
-
-      if (getDataLocal(KEY_STORE.SET_SETTING)) {
-        // data is already in local store, don't need to wait for get init data
-        Promise.all(initDataPromiseArr)
-      } else {
-        // if user access the fisrt time and don't have data in local store
-        await Promise.all(initDataPromiseArr)
-      }
     } finally {
       this.setState({
         isLoading: false
@@ -85,16 +72,9 @@ class App extends Component {
     const promiseArr = storageRedux.map((item) => {
       return checkLocalStoreToRedux(store, item.key, item.action, item.init)
     })
-    const initDataPromiseArr = [
-      // ReduxServices.getSettings(),
-      ReduxServices.refreshUserBalance(),
-      ReduxServices.refreshTomoPrice()
-    ]
-    Promise.all([...promiseArr, ...initDataPromiseArr])
 
-    this.currentInterval = setInterval(() => {
-      ReduxServices.refreshTomoPrice()
-    }, 5000)
+    Promise.all([...promiseArr])
+
   }
   componentWillUnmount () {
     clearInterval(this.currentInterval)

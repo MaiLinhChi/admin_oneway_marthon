@@ -1,5 +1,4 @@
 import storeRedux from 'src/controller/Redux/store/configureStore'
-import Web3Services from 'src/controller/Web3'
 import TomoFinanceServices from 'src/controller/API/HTTP'
 import MetaMaskServices from 'src/controller/MetaMask'
 import WalletConnectServices from 'src/controller/WalletConnect'
@@ -36,22 +35,6 @@ export default class ReduxServices {
     }
   }
 
-  static async getSettings () {
-    let configs = {}
-    const promiseResult = await Promise.all([
-      TomoFinanceServices.getConfig(),
-      Web3Services.getOwner(),
-      Web3Services.getLockStatus(),
-      Web3Services.getProcessMN()
-    ])
-    if (promiseResult[0] && promiseResult[0].data) {
-      configs = { ...configs, ...promiseResult[0].data }
-    }
-    configs.owner = promiseResult[1]
-    configs.isLock = promiseResult[2]
-    configs.isProcessMN = promiseResult[3]
-    ReduxServices.callDispatchAction(StorageActions.setSetting(configs));
-  }
 
   static getContractAddress () {
     const { settingRedux } = storeRedux.getState()
@@ -199,104 +182,8 @@ export default class ReduxServices {
     }
   }
 
-  static loginMetamask (callback = null, callbackErr = null) {
-    return new Promise(async (resolve, reject) => {
-      const signMetaMask = (callback = null) => {
-        return new Promise(async (resolve, reject) => {
-          try {
-            const { metamaskRedux } = storeRedux.getState()
-            const { settingRedux } = storeRedux.getState()
-            const address = metamaskRedux.account
-            let msgHash = settingRedux.messageHash || 'HTTP'
-            let content = await Web3Services.onSignMessage(address, msgHash)
-            if (content && content.address && content.signature) {
-
-              let newMetaMask = Object.assign({}, metamaskRedux)
-              ReduxServices.callDispatchAction(PageReduxAction.setMetamask(newMetaMask))
-              let newUserLogin = Object.assign({}, { address: metamaskRedux.address, sig: content, isSigned: true })
-              ReduxServices.callDispatchAction(StorageActions.setUserData(newUserLogin))
-              ReduxServices.refreshUserBalance()
-              callback && callback()
-              return resolve()
-            } else {
-              showNotification(messages.txtWarningActiveMetaMask)
-              ReduxServices.callDispatchAction(StorageActions.setUserData({}))
-              callbackErr && callbackErr()
-              return resolve()
-            }
-          } catch (error) {
-            showNotification(messages.txtWarningSigninMetaMaskError)
-            reject(error)
-          }
-        })
-      }
-
-      const { metamaskRedux, locale } = storeRedux.getState()
-      const { messages } = locale
-      let currentWeb3 = window.ethereum
-      try {
-        // Check if MetaMask is installed
-        if (!currentWeb3) {
-          showNotification(messages.txtWarningInstallMetaMask)
-          return resolve(null)
-        }
-
-        // check network allowed
-        const findNetwork = parseInt(process.env.REACT_APP_CHAIN_ID)
-        let network = findNetwork || 0
-        if (metamaskRedux.network !== network) {
-          await MetaMaskServices.addNewChain(network)
-        }
-
-        if (metamaskRedux.accounts) {
-          let isSigned = ReduxServices.checkIsSigned()
-          if (!isSigned) {
-            signMetaMask(callback)
-          } else {
-            callback && callback()
-            return resolve(null)
-          }
-        } else {
-          return resolve(null)
-        }
-      } catch (error) {
-        callbackErr && callbackErr()
-        return resolve(error)
-      }
-    })
-  }
-
-  static async refreshUserBalance () {
-    const { userData, metamaskRedux } = storeRedux.getState()
-    let isSigned = checkIsSigned(userData, metamaskRedux)
-
-    const balanceResult = {
-      balanceTOMO: 0,
-      balanceTAI: 0,
-      balanceTFI: 0
-    }
-    if (isSigned) {
-      const contractAddress = ReduxServices.getContractAddress()
-      const promiseResult = await Promise.all([
-        Web3Services.getTomoBalance(userData.address),
-        Web3Services.getTokenBalance(userData.address, contractAddress.tokenTAI),
-        Web3Services.getTokenBalance(userData.address, contractAddress.tokenTFI)
-      ])
-      balanceResult.balanceTOMO = promiseResult[0]
-      balanceResult.balanceTAI = promiseResult[1]
-      balanceResult.balanceTFI = promiseResult[2]
-    }
-
-    ReduxServices.callDispatchAction(PageReduxAction.setBalance({ ...balanceResult }))
-  }
-
   static resetUser () {
     ReduxServices.callDispatchAction(StorageActions.setUserData(null))
-  }
-
-  static async refreshTomoPrice () {
-    let tomoPrice = await Web3Services.getTokenFiat('TOMO')
-    ReduxServices.callDispatchAction(PageReduxAction.setTomoPrice(tomoPrice))
   }
 
   static checkIsSigned () {
