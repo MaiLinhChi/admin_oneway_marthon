@@ -179,3 +179,14 @@ export const getCurrentBrowserLanguage = () => {
   }
   return language
 }
+
+export const convertAddressArrToString = (arrAddress, numStart = 4, numEnd = 4) => {
+  if (arrAddress.length === 1) {
+    return arrAddress[0].substring(0, numStart) + '...' + arrAddress[0].substring(arrAddress[0].length - numEnd, arrAddress[0].length)
+  } else if ((arrAddress.length > 1)) {
+    let stringTemp = ''
+    arrAddress.map((item, index) => {
+      index !== arrAddress.length - 1 ? stringTemp += convertAddressArrToString([item]) + '\n' : stringTemp += convertAddressArrToString([item])
+    })
+  }
+}
