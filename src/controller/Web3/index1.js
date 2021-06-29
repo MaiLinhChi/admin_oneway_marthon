@@ -17,6 +17,7 @@ import abiTomoValidator from './abiTomoValidator';
 import abiStaking from './abiStaking'
 import abiVoting from './abiVoting';
 import abiMint from "./abiMint"
+import HightOrLowABI from "./HightOrLowABI"
 
 let window = require('global/window');
 let web3Instance
@@ -25,6 +26,7 @@ if (window.tomoWeb3) {
 } else {
     web3Instance = new Web3(new Web3.providers.HttpProvider(process.env.REACT_APP_PROVIDER_URL))
 }
+// const HightOrLowABI = require('./HightOrLowABI.json')
 
 export default class Web3Services {
     static async onSignMessage(address, nonce) {
@@ -1941,6 +1943,38 @@ export default class Web3Services {
                 });
         });
     }
+
+    static async setFee (
+        ownerAddress,
+        feePercent,
+        takeFee,
+        callbackBeforeDone,
+        callbackAfterDone,
+        callbackRejected
+      ) {
+        return new Promise(async (resolve, reject) => {
+          const contractAddresses = process.env.REACT_APP_CONTRACT
+          let web3 = new Web3(web3Instance.currentProvider);
+          const contract = new web3.eth.Contract(HightOrLowABI, contractAddresses)
+          const dataTx = this.callGetDataWeb3(contract, 'setFee',[feePercent,takeFee])
+          const setFeeData = {
+            to: contractAddresses,
+            data: dataTx,
+            callBeforeFunc: callbackBeforeDone,
+            callbackFunc: callbackAfterDone,
+            isCallBackErr: true,
+            callbackErrFunc: callbackRejected
+          }
+          this.postBaseSendTxs(ownerAddress, [setFeeData], true)
+            .then((res) => {
+              resolve(res[0])
+            })
+            .catch((err) => {
+              callbackRejected(err)
+              reject(err)
+            })
+        })
+      }
 }
 
 

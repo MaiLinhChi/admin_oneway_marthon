@@ -83,15 +83,26 @@ export const detectAddress = (address) => {
  * @param {string} title
  * @param {string} type success|error|info|warn|open|close| at https://ant.design/components/notification/
  */
-export const showNotification = (title = null, type = 'error', description = '', className = 'notification-error', icon = '', ) => {
+// export const showNotification = (title = null, type = 'error', description = '', className = 'notification-error', icon = '', ) => {
+//   notification[type]({
+//     message: title,
+//     description: description || '',
+//     placement: 'bottomRight',
+//     className,
+//     icon,
+//     bottom: 54,
+//     duration: 5
+//   })
+// }
+export const showNotification = (title = null, description = '', icon = '', type = 'open') => {
   notification[type]({
     message: title,
     description: description || '',
     placement: 'bottomRight',
-    className,
-    icon,
+    className: 'notification-class',
     bottom: 54,
-    duration: 5
+    duration: 5,
+    icon: icon || ''
   })
 }
 

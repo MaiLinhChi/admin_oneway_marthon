@@ -6,7 +6,7 @@ import {
     CHeaderNavItem,
     CHeaderNavLink,
     CSubheader,
-    CBreadcrumbRouter, CButton,
+    CBreadcrumbRouter, CButton,CLink
 } from '@coreui/react'
 
 // routes config
@@ -15,9 +15,12 @@ import Observer from "../common/observer";
 import {OBSERVER_KEY} from "../common/constants";
 import {HightOrLowABI} from "../controller/Web3";
 import ReduxServices from "../common/redux";
+import storeRedux from 'src/controller/Redux/store/configureStore'
+import { convertAddressArrToString, detectAddress } from 'src/common/function';
 
 const TheHeader = ({sidebarShow, setSidebarShow}) => {
     let isSigned = ReduxServices.checkIsSigned()
+    const { userData } = storeRedux.getState()
     const handleSignIn = () => {
         Observer.emit(OBSERVER_KEY.SIGN_IN);
     };
@@ -50,7 +53,14 @@ const TheHeader = ({sidebarShow, setSidebarShow}) => {
         </CHeaderNavItem>
       </CHeaderNav>
         <CHeaderNav className="px-3">
-            {!isSigned && <CButton active block color="info" aria-pressed="true" onClick={handleSignIn} style={{width: 100}}>Connect</CButton>}
+            {
+            !isSigned 
+            ? 
+            <CButton active block color="info" aria-pressed="true" onClick={handleSignIn} style={{width: 100}}>Connect</CButton> 
+            :
+            <CLink href={detectAddress(userData.address)} target="_blank">{convertAddressArrToString([userData.address])}</CLink>
+            }
+
         </CHeaderNav>
       <CSubheader className="px-3 justify-content-between">
         <CBreadcrumbRouter

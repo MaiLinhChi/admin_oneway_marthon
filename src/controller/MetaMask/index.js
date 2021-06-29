@@ -9,6 +9,7 @@ let onboarding
 export default class MetaMaskServices {
   static async initialize () {
     try {
+      console.log("aaaa");
       if (!onboarding) {
         onboarding = new MetaMaskOnboarding()
       }
