@@ -172,7 +172,7 @@ const Account = () => {
                           <b>Fee Percent:</b> {feePercent}%
                         </CCol>
                         <CCol xs="6" sm="6">
-                          <b>Fee Address:</b> {<CLink href={detectAddress(takeFee)} target="_blank">{convertAddressArrToString([takeFee])}</CLink>}
+                          <b>Fee Address:</b> {<CLink href={detectAddress(takeFee)} target="_blank">{convertAddressArrToString([takeFee],8,8)}</CLink>}
                         </CCol>
                         <CCol xs="1" sm="1">
                           <div className="card-header-actions">
