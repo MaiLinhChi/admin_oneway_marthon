@@ -67,7 +67,7 @@ const PriceInput = ({ value = '', suffix = '', onChange, isError = false, errorM
         step='any'
         inputMode='decimal'
         suffix={suffix}
-        value={value.number || number}
+        value={value ? value.number : number}
         onChange={onNumberChange}
       />
       {isError && <span className='price-input-error'>{errorMessage}</span>}

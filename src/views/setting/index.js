@@ -43,7 +43,7 @@ const Account = () => {
     contractHightOrLow().methods.takeFee().call().then(setTakeFee);
   }, [])
 
-  const onChangeFee = (value) => {
+  const onChangeFee = (value, isReset = false) => {
     setFeePercentInput(value.number)
     if (value.number !== '') {
       let isError = false
@@ -54,8 +54,10 @@ const Account = () => {
       }
       setIsErrorFee(isError)
     } else {
-      setIsErrorFee(true)
+      if(!isReset){
+        setIsErrorFee(true)
       setErrorMessageFee('_feePercent cannot be empty')
+      } 
     }
   }
 
@@ -121,8 +123,8 @@ const Account = () => {
       )
       contractHightOrLow().methods.feePercent().call().then(setFeePercent);
       contractHightOrLow().methods.takeFee().call().then(setTakeFee);
-      // onChangeFee({number: 'jumpToBlank'});
-      setFeePercentInput('')
+      onChangeFee({number: ''},true);
+      // setFeePercentInput('')
       setTakeFeeInput('');
       setLoading(false)
     }
