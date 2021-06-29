@@ -104,11 +104,23 @@
     "type": "event"
   },
   {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
         "name": "_feePercent",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_takeFee",
+        "type": "address"
       }
     ],
     "name": "setFee",
@@ -633,6 +645,19 @@
   {
     "inputs": [],
     "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "takeFee",
     "outputs": [
       {
         "internalType": "address",
