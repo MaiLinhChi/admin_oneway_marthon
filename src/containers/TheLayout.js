@@ -30,7 +30,7 @@ const TheLayout = () => {
   },[]);
 
   const closeModal = () => {
-    myModal.current.closeModal()
+    myModal.current && myModal.current.closeModal()
   }
 
   const handleSignIn = async (callback = null, callbackErr = null) => {

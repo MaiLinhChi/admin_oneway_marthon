@@ -27,7 +27,7 @@ const fields = ['user','txhash', 'gameId', 'betAmount', 'winAmount', 'type', 'cr
 
 const View = () => {
   const [bets, setBets] = useState([]);
-  const [totalPage, setTotalPage] = useState(0);
+
     const run = async () => {
 
         const res = await HTTP.fetchData('/bets', 'GET', {sort: 'desc', limit: 10000}, null);

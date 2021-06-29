@@ -39,6 +39,7 @@ class App extends Component {
         })
         return
       }
+
       const storageRedux = [
         { key: KEY_STORE.SET_LOCALE, action: storageActions.setLocale, init: init.lang },
         { key: KEY_STORE.SET_CONNECTION_METHOD, action: storageActions.setConnectionMethod, init: init.connectionMethod },

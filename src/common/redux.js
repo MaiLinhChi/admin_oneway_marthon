@@ -182,6 +182,72 @@ export default class ReduxServices {
     }
   }
 
+  static loginMetamask (callback = null, callbackErr = null) {
+    return new Promise(async (resolve, reject) => {
+      const signMetaMask = (callback = null) => {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const { metamaskRedux, settingRedux, locale } = storeRedux.getState()
+            const { messages } = locale
+            let msgHash = settingRedux.messageHash || 'Binary Option'
+            let content = await MetaMaskServices.signPersonalMessage(metamaskRedux.address, msgHash)
+            console.log('content', content, metamaskRedux.address);
+            if (content) {
+              let newMetaMask = Object.assign({}, metamaskRedux)
+              ReduxServices.callDispatchAction(PageReduxAction.setMetamask(newMetaMask))
+              let newUserLogin = Object.assign({}, { address: metamaskRedux.address, sig: content, isSigned: true })
+              ReduxServices.callDispatchAction(StorageActions.setUserData(newUserLogin))
+              ReduxServices.refreshUserBalance()
+              callback && callback()
+              return resolve()
+            } else {
+              showNotification(messages.txtWarningActiveMetaMask)
+              ReduxServices.callDispatchAction(StorageActions.setUserData({}))
+              callbackErr && callbackErr()
+              return resolve()
+            }
+          } catch (error) {
+            showNotification(messages.txtWarningSigninMetaMaskError)
+            reject(error)
+          }
+        })
+      }
+
+      const { metamaskRedux, locale } = storeRedux.getState()
+      const { messages } = locale
+      let currentWeb3 = window.ethereum
+      try {
+        // Check if MetaMask is installed
+        if (!currentWeb3) {
+          showNotification(messages.txtWarningInstallMetaMask)
+          return resolve(null)
+        }
+
+        // check network allowed
+        const findNetwork = parseInt(process.env.REACT_APP_CHAIN_ID)
+        let network = findNetwork || 0
+        if (metamaskRedux.network !== network) {
+          await MetaMaskServices.addNewChain(network)
+        }
+
+        if (metamaskRedux.accounts) {
+          let isSigned = ReduxServices.checkIsSigned()
+          if (!isSigned) {
+            signMetaMask(callback)
+          } else {
+            callback && callback()
+            return resolve(null)
+          }
+        } else {
+          return resolve(null)
+        }
+      } catch (error) {
+        callbackErr && callbackErr()
+        return resolve(error)
+      }
+    })
+  }
+
   static resetUser () {
     ReduxServices.callDispatchAction(StorageActions.setUserData(null))
   }
