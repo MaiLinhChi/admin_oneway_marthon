@@ -1,9 +1,8 @@
 import ReduxServices from 'src/common/redux'
 import MetaMaskOnboarding from '@metamask/onboarding'
 import Observer from 'src/common/observer'
-import { OBSERVER_KEY, BSC_RPC } from 'src/common/constants'
+import { OBSERVER_KEY, RPC } from 'src/common/constants'
 import { convertUtf8ToHex } from '@walletconnect/utils'
-import PageReduxAction from 'src/controller/Redux/actions/pageActions'
 let onboarding
 
 export default class MetaMaskServices {
@@ -73,6 +72,11 @@ export default class MetaMaskServices {
       const networkId = await window.ethereum.request({
         method: 'net_version'
       })
+      const findNetwork = parseInt(process.env.REACT_APP_NETWORK_ID)
+      console.log(chainId, networkId, findNetwork)
+      if (networkId !== findNetwork) {
+        await this.addNewChain(findNetwork)
+      }
       this.handleNewNetwork(networkId)
     } catch (err) {
       console.error(err)
@@ -100,7 +104,8 @@ export default class MetaMaskServices {
   }
 
   static async addNewChain (chainID) {
-    let chainData = BSC_RPC[parseInt(chainID)]
+    console.log('chainID', chainID, MetaMaskOnboarding.isMetaMaskInstalled())
+    let chainData = RPC[parseInt(chainID)]
     if (chainData && MetaMaskOnboarding.isMetaMaskInstalled()) {
       return new Promise((resolve, reject) => {
         // Sign transaction
@@ -108,9 +113,11 @@ export default class MetaMaskServices {
           .request({ method: 'wallet_addEthereumChain', params: [chainData] })
           .then((result) => {
             // Returns result successfully
+            console.log(result)
             return resolve(result)
           })
           .catch((error) => {
+            console.log(error)
             // Error returned when rejected
             return reject(error)
           })
@@ -155,7 +162,7 @@ export default class MetaMaskServices {
       accounts,
       address
     })
-    
+
     ReduxServices.loginMetamask(callbackSignIn)
   }
 }

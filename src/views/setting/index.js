@@ -41,6 +41,7 @@ const Account = () => {
   useEffect(() => {
     contractHightOrLow().methods.feePercent().call().then(setFeePercent);
     contractHightOrLow().methods.takeFee().call().then(setTakeFee);
+    console.log(takeFee)
   }, [])
 
   const onChangeFee = (value, isReset = false) => {

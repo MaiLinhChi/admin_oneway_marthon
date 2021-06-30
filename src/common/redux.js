@@ -1,11 +1,10 @@
 import storeRedux from 'src/controller/Redux/store/configureStore'
-import TomoFinanceServices from 'src/controller/API/HTTP'
 import MetaMaskServices from 'src/controller/MetaMask'
 import WalletConnectServices from 'src/controller/WalletConnect'
 import StorageActions from 'src/controller/Redux/actions/storageActions'
 import PageReduxAction from 'src/controller/Redux/actions/pageActions'
 import { METAMASK_INFO, CONTRACT } from 'src/common/constants'
-import { showNotification, checkIsSigned, lowerCase, getCurrentBrowserLanguage } from 'src/common/function'
+import { showNotification, lowerCase, getCurrentBrowserLanguage } from 'src/common/function'
 import { CONNECTION_METHOD } from './constants'
 
 export default class ReduxServices {
@@ -13,14 +12,14 @@ export default class ReduxServices {
     storeRedux.dispatch(action)
   }
 
-  static getAuthKeyBearer () {
-    const { userData } = storeRedux.getState()
-    if (userData && userData.token) {
-      return 'Bearer ' + userData.token
-    } else {
-      return ''
-    }
-  }
+  // static getAuthKeyBearer () {
+  //   const { userData } = storeRedux.getState()
+  //   if (userData && userData.token) {
+  //     return 'Bearer ' + userData.token
+  //   } else {
+  //     return ''
+  //   }
+  // }
 
   static async detectConnectionMethod () {
     const { connectionMethod } = storeRedux.getState()
@@ -191,7 +190,7 @@ export default class ReduxServices {
             const { messages } = locale
             let msgHash = settingRedux.messageHash || 'Binary Option'
             let content = await MetaMaskServices.signPersonalMessage(metamaskRedux.address, msgHash)
-            
+
             if (content) {
               let newMetaMask = Object.assign({}, metamaskRedux)
               ReduxServices.callDispatchAction(PageReduxAction.setMetamask(newMetaMask))
@@ -224,7 +223,7 @@ export default class ReduxServices {
         }
 
         // check network allowed
-        const findNetwork = parseInt(process.env.REACT_APP_CHAIN_ID)
+        const findNetwork = parseInt(process.env.REACT_APP_NETWORK_ID)
         let network = findNetwork || 0
         if (metamaskRedux.network !== network) {
           await MetaMaskServices.addNewChain(network)
