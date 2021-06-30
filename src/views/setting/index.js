@@ -16,11 +16,11 @@ import {
   CFormGroup
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react';
+import { Button } from 'antd'
 import { detectAddress, convertAddressArrToString, validateAddress, showNotification, destroyNotification, isUserDeniedTransaction } from 'src/common/function';
 import { contractHightOrLow, callGetDataWeb3, postBaseSendTxs } from 'src/controller/Web3'
 import PriceInput from 'src/components/PriceInput'
 import storeRedux from 'src/controller/Redux/store/configureStore'
-import { Button } from 'antd'
 
 const Account = () => {
   const [feePercent, setFeePercent] = useState(0);
@@ -57,7 +57,7 @@ const Account = () => {
       if(!isReset){
         setIsErrorFee(true)
       setErrorMessageFee('_feePercent cannot be empty')
-      } 
+      }
     }
   }
 

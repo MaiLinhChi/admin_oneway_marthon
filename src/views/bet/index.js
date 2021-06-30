@@ -16,6 +16,8 @@ import {
     detectAddress,
     detectTransaction
 } from 'src/common/function';
+import Spinner from 'src/views/base/spinner';
+
 const getBadge = status => {
     switch (status) {
         case 1: return 'success'
@@ -26,18 +28,23 @@ const getBadge = status => {
 const fields = ['user','txhash', 'gameId', 'betAmount', 'winAmount', 'type', 'createdAt']
 
 const View = () => {
+  const [loading, setLoading] = useState(false);
   const [bets, setBets] = useState([]);
 
     const run = async () => {
-
+        setLoading(true)
         const res = await HTTP.fetchData('/bets', 'GET', {sort: 'desc', limit: 10000}, null);
         setBets(res.data)
         // setTotalPage(res.totalPage)
+        setLoading(false)
     }
     useEffect(() => {
         run()
     }, [])
   return (
+      loading
+          ? <Spinner />
+          :
       <CRow>
         <CCol xs="12" lg="12">
           <CCard>
@@ -67,7 +74,7 @@ const View = () => {
                             </td>
                         ),
                       'createdAt': (item)=>(
-                          <td>{moment(item.createdAt).format()}</td>
+                          <td>{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</td>
                       ),
 
                   }}
