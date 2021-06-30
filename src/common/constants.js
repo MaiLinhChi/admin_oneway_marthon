@@ -165,3 +165,28 @@ export const BSC_RPC = {
     blockExplorerUrls: ['https://testnet.bscscan.com']
   }
 }
+
+export const TOMO_RPC = {
+  88: {
+    rpcUrls: ['https://rpc.tomochain.com'],
+    chainId: '88',
+    chainName: 'TomoChain Mainnet',
+    nativeCurrency: {
+      name: 'TomoChain',
+      symbol: 'TOMO',
+      decimals: 18
+    },
+    blockExplorerUrls: ['https://scan.tomochain.com/']
+  },
+  89: {
+    rpcUrls: ['https://rpc.testnet.tomochain.com'],
+    chainId: '89',
+    chainName: 'TomoChain Testnet',
+    nativeCurrency: {
+      name: 'TomoChain',
+      symbol: 'TOMO',
+      decimals: 18
+    },
+    blockExplorerUrls: ['https://scan.testnet.tomochain.com']
+  }
+}

@@ -71,7 +71,7 @@ export const detectTransaction = (txhash) => {
 
 export const detectAddress = (address) => {
   if (parseInt(process.env.REACT_APP_NETWORK_ID) === 88) {
-    return `https://scan.tomochain.com/address/${address}`
+    return `https://scan.tomochain.com/address/${address}` 
   } else {
     return `https://scan.testnet.tomochain.com/address/${address}`
   }
@@ -83,15 +83,26 @@ export const detectAddress = (address) => {
  * @param {string} title
  * @param {string} type success|error|info|warn|open|close| at https://ant.design/components/notification/
  */
-export const showNotification = (title = null, type = 'error', description = '', className = 'notification-error', icon = '', ) => {
+// export const showNotification = (title = null, type = 'error', description = '', className = 'notification-error', icon = '', ) => {
+//   notification[type]({
+//     message: title,
+//     description: description || '',
+//     placement: 'bottomRight',
+//     className,
+//     icon,
+//     bottom: 54,
+//     duration: 5
+//   })
+// }
+export const showNotification = (title = null, description = '', icon = '', type = 'open') => {
   notification[type]({
     message: title,
     description: description || '',
     placement: 'bottomRight',
-    className,
-    icon,
+    className: 'notification-class',
     bottom: 54,
-    duration: 5
+    duration: 5,
+    icon: icon || ''
   })
 }
 
@@ -178,4 +189,15 @@ export const getCurrentBrowserLanguage = () => {
     break
   }
   return language
+}
+
+export const convertAddressArrToString = (arrAddress, numStart = 4, numEnd = 4) => {
+  if (arrAddress.length === 1) {
+    return arrAddress[0].substring(0, numStart) + '...' + arrAddress[0].substring(arrAddress[0].length - numEnd, arrAddress[0].length)
+  } else if ((arrAddress.length > 1)) {
+    let stringTemp = ''
+    arrAddress.map((item, index) => {
+      index !== arrAddress.length - 1 ? stringTemp += convertAddressArrToString([item]) + '\n' : stringTemp += convertAddressArrToString([item])
+    })
+  }
 }

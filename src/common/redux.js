@@ -191,13 +191,13 @@ export default class ReduxServices {
             const { messages } = locale
             let msgHash = settingRedux.messageHash || 'Binary Option'
             let content = await MetaMaskServices.signPersonalMessage(metamaskRedux.address, msgHash)
-            console.log('content', content, metamaskRedux.address);
+            
             if (content) {
               let newMetaMask = Object.assign({}, metamaskRedux)
               ReduxServices.callDispatchAction(PageReduxAction.setMetamask(newMetaMask))
               let newUserLogin = Object.assign({}, { address: metamaskRedux.address, sig: content, isSigned: true })
               ReduxServices.callDispatchAction(StorageActions.setUserData(newUserLogin))
-              ReduxServices.refreshUserBalance()
+              // ReduxServices.refreshUserBalance()
               callback && callback()
               return resolve()
             } else {
@@ -284,6 +284,16 @@ export default class ReduxServices {
       ...data
     }
     ReduxServices.callDispatchAction(PageReduxAction.setMetamask({ ...newMetaMask }))
+  }
+
+  static getWalletConnect () {
+    const { walletConnect } = storeRedux.getState()
+    return walletConnect
+  }
+
+  static getConnectionMethod () {
+    const { connectionMethod } = storeRedux.getState()
+    return connectionMethod
   }
 }
 
