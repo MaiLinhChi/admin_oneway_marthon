@@ -71,7 +71,7 @@ export const detectTransaction = (txhash) => {
 
 export const detectAddress = (address) => {
   if (parseInt(process.env.REACT_APP_NETWORK_ID) === 88) {
-    return `https://scan.tomochain.com/address/${address}`
+    return `https://scan.tomochain.com/address/${address}` 
   } else {
     return `https://scan.testnet.tomochain.com/address/${address}`
   }
