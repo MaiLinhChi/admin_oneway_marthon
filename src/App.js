@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-import { BrowserRouter, HashRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import ReduxServices from 'src/common/redux'
-import Observer from 'src/common/observer'
-import { OBSERVER_KEY, KEY_STORE } from 'src/common/constants'
+import { KEY_STORE } from 'src/common/constants'
 import storageActions from 'src/controller/Redux/actions/storageActions'
 import { checkLocalStoreToRedux } from 'src/controller/Redux/lib/reducerConfig'
 import store from 'src/controller/Redux/store/configureStore'
 import init from 'src/controller/Redux/lib/initState'
 import 'antd/dist/antd.min.css'
 import './scss/style.scss';
-import { getDataLocal } from 'src/common/function'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -51,10 +49,13 @@ class App extends Component {
         { key: KEY_STORE.SET_GIFT_CARDS, action: storageActions.setGiftCards, init: init.giftCards },
         { key: KEY_STORE.SET_PAYMENT_DATA, action: storageActions.setPaymentData, init: init.paymentData }
       ]
-
+      // eslint-disable-next-line
       const promiseArr = storageRedux.map((item) => {
         checkLocalStoreToRedux(store, item.key, item.action, item.init)
       })
+      // const promiseArr = storageRedux.forEach((item) => {
+      //   checkLocalStoreToRedux(store, item.key, item.action, item.init)
+      // })
       await Promise.all(promiseArr)
 
       // in the case reload page: need to wait for detect connection method already in use before showing page

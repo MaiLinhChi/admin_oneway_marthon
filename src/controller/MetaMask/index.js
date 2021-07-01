@@ -3,7 +3,6 @@ import MetaMaskOnboarding from '@metamask/onboarding'
 import Observer from 'src/common/observer'
 import { OBSERVER_KEY, BSC_RPC } from 'src/common/constants'
 import { convertUtf8ToHex } from '@walletconnect/utils'
-import PageReduxAction from 'src/controller/Redux/actions/pageActions'
 let onboarding
 
 export default class MetaMaskServices {

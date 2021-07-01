@@ -62,7 +62,7 @@ const View = () => {
                         (item)=>(
                             <td>
                               <CBadge color={getBadge(item.type)}>
-                                {item.type == 1 ? 'Player' : 'Bot'}
+                                {item.type === 1 ? 'Player' : 'Bot'}
                               </CBadge>
                             </td>
                         ),
