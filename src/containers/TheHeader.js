@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux';
 import {
   CHeader,
@@ -18,7 +18,6 @@ import ReduxServices from "../common/redux";
 import TheHeaderDropdown from 'src/containers/TheHeaderDropdown';
 
 const TheHeader = ({sidebarShow, setSidebarShow}) => {
-    let isSigned;
   const userData = useSelector(state => state.userData)
   const handleSignIn = () => {
     Observer.emit(OBSERVER_KEY.SIGN_IN);
@@ -32,9 +31,6 @@ const TheHeader = ({sidebarShow, setSidebarShow}) => {
     const val = [false, 'responsive'].includes(sidebarShow) ? true : 'responsive'
     setSidebarShow(val);
   }
-  useEffect(() => {
-      if(userData) isSigned = ReduxServices.checkIsSigned()
-  })
 
   const renderConnect = () => {
     const isSigned = ReduxServices.checkIsSigned()

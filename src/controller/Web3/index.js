@@ -16,7 +16,7 @@ const createWeb3Provider = () => {
     } else if (connectionMethod === CONNECTION_METHOD.METAMASK && window.ethereum) {
       web3.setProvider(window.ethereum)
     } else {
-      web3.setProvider(new Web3.providers.HttpProvider(TOMO_RPC[parseInt(process.env.REACT_APP_CHAIN_ID)].rpcUrls[0]))
+      web3.setProvider(new Web3.providers.HttpProvider(TOMO_RPC[parseInt(process.env.REACT_APP_NETWORK_ID)].rpcUrls[0]))
     }
     return web3
   }
