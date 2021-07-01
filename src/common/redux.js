@@ -12,14 +12,14 @@ export default class ReduxServices {
     storeRedux.dispatch(action)
   }
 
-  static getAuthKeyBearer () {
-    const { userData } = storeRedux.getState()
-    if (userData && userData.token) {
-      return 'Bearer ' + userData.token
-    } else {
-      return ''
-    }
-  }
+  // static getAuthKeyBearer () {
+  //   const { userData } = storeRedux.getState()
+  //   if (userData && userData.token) {
+  //     return 'Bearer ' + userData.token
+  //   } else {
+  //     return ''
+  //   }
+  // }
 
   static async detectConnectionMethod () {
     const { connectionMethod } = storeRedux.getState()
@@ -192,7 +192,7 @@ export default class ReduxServices {
             const { messages } = locale
             let msgHash = settingRedux.messageHash || 'Binary Option'
             let content = await MetaMaskServices.signPersonalMessage(metamaskRedux.address, msgHash)
-            
+
             if (content) {
               let newMetaMask = Object.assign({}, metamaskRedux)
               ReduxServices.callDispatchAction(PageReduxAction.setMetamask(newMetaMask))
@@ -225,7 +225,7 @@ export default class ReduxServices {
         }
 
         // check network allowed
-        const findNetwork = parseInt(process.env.REACT_APP_CHAIN_ID)
+        const findNetwork = parseInt(process.env.REACT_APP_NETWORK_ID)
         let network = findNetwork || 0
         if (metamaskRedux.network !== network) {
           await MetaMaskServices.addNewChain(network)

@@ -84,14 +84,14 @@ export const CONNECTION_METHOD = {
 }
 
 export const TIME = {
-  WAITING_SECONDS: 1800, // 30 * 60 
+  WAITING_SECONDS: 1800, // 30 * 60
   TOMO_BLOCK_MINED_SECONDS:  2,
 }
 
 export const API_ROUTES = {
-  DEPOSITS: '/deposits', 
-  GENERATES: '/generates', 
-  PAYBACKS: '/paybacks', 
+  DEPOSITS: '/deposits',
+  GENERATES: '/generates',
+  PAYBACKS: '/paybacks',
   WITHDRAWS: '/withdraws',
   GET_VOTES: '/admin/voters',
   POST_VOTES: '/admin/voter',
@@ -99,9 +99,9 @@ export const API_ROUTES = {
 }
 
 export const VOTER_ACTIONS = {
-  REQUEST_WITHDRAW: 'requestWD', 
-  WITHDRAW: 'withdraw', 
-  REQUEST_CONFIG: 'requestConfig', 
+  REQUEST_WITHDRAW: 'requestWD',
+  WITHDRAW: 'withdraw',
+  REQUEST_CONFIG: 'requestConfig',
   CONFIG: 'config'
 }
 
@@ -141,7 +141,7 @@ export const CONTRACTS_NAME = {
   LIQUIDATIOR: 'Liquidatior'
 }
 
-export const BSC_RPC = {
+export const RPC = {
   56: {
     rpcUrls: ['https://bsc-dataseed.binance.org'],
     chainId: '0x38',
@@ -163,6 +163,28 @@ export const BSC_RPC = {
       decimals: 18
     },
     blockExplorerUrls: ['https://testnet.bscscan.com']
+  },
+  88: {
+    rpcUrls: ['https://rpc.tomochain.com'],
+    chainId: '0x58',
+    chainName: 'TomoChain Mainnet',
+    nativeCurrency: {
+      name: 'TomoChain',
+      symbol: 'TOMO',
+      decimals: 18
+    },
+    blockExplorerUrls: ['https://scan.tomochain.com/']
+  },
+  89: {
+    rpcUrls: ['https://rpc.testnet.tomochain.com'],
+    chainId: '0x59',
+    chainName: 'TomoChain Testnet',
+    nativeCurrency: {
+      name: 'TomoChain',
+      symbol: 'TOMO',
+      decimals: 18
+    },
+    blockExplorerUrls: ['https://scan.testnet.tomochain.com']
   }
 }
 
