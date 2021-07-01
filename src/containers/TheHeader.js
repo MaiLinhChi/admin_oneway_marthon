@@ -1,28 +1,28 @@
 import React, {useEffect} from 'react'
+import { useSelector } from 'react-redux';
 import {
-    CHeader,
-    CToggler,
-    CHeaderNav,
-    CHeaderNavItem,
-    CHeaderNavLink,
-    CSubheader,
-    CBreadcrumbRouter, CButton,CLink
+  CHeader,
+  CToggler,
+  CHeaderNav,
+  CHeaderNavItem,
+  CHeaderNavLink,
+  CSubheader,
+  CBreadcrumbRouter, CButton
 } from '@coreui/react'
 
 // routes config
 import routes from '../routes'
 import Observer from "../common/observer";
-import {OBSERVER_KEY} from "../common/constants";
+import { OBSERVER_KEY } from "../common/constants";
 import ReduxServices from "../common/redux";
-import storeRedux from 'src/controller/Redux/store/configureStore'
-import { convertAddressArrToString, detectAddress } from 'src/common/function';
+import TheHeaderDropdown from 'src/containers/TheHeaderDropdown';
 
 const TheHeader = ({sidebarShow, setSidebarShow}) => {
     let isSigned;
-    const { userData } = storeRedux.getState()
-    const handleSignIn = () => {
-        Observer.emit(OBSERVER_KEY.SIGN_IN);
-    };
+  const userData = useSelector(state => state.userData)
+  const handleSignIn = () => {
+    Observer.emit(OBSERVER_KEY.SIGN_IN);
+  };
   const toggleSidebar = () => {
     const val = [true, 'responsive'].includes(sidebarShow) ? false : 'responsive'
     setSidebarShow(val);
@@ -35,6 +35,15 @@ const TheHeader = ({sidebarShow, setSidebarShow}) => {
   useEffect(() => {
       if(userData) isSigned = ReduxServices.checkIsSigned()
   })
+
+  const renderConnect = () => {
+    const isSigned = ReduxServices.checkIsSigned()
+    if (isSigned) {
+      return <TheHeaderDropdown userData={userData} />
+    } else {
+      return <CButton active block color="info" aria-pressed="true" onClick={handleSignIn} style={{ width: 100 }}>Connect</CButton>
+    }
+  }
 
   return (
     <CHeader withSubheader>
@@ -54,16 +63,9 @@ const TheHeader = ({sidebarShow, setSidebarShow}) => {
           <CHeaderNavLink to="/dashboard">Dashboard</CHeaderNavLink>
         </CHeaderNavItem>
       </CHeaderNav>
-        <CHeaderNav className="px-3">
-            {
-            !isSigned
-            ?
-            <CButton active block color="info" aria-pressed="true" onClick={handleSignIn} style={{width: 100}}>Connect</CButton>
-            :
-            <CLink href={detectAddress(userData.address)} target="_blank">{convertAddressArrToString([userData.address])}</CLink>
-            }
-
-        </CHeaderNav>
+      <CHeaderNav className="px-3">
+        {renderConnect()}
+      </CHeaderNav>
       <CSubheader className="px-3 justify-content-between">
         <CBreadcrumbRouter
           className="border-0 c-subheader-nav m-0 px-0 px-md-3"

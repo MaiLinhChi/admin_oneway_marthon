@@ -49,10 +49,13 @@ class App extends Component {
         { key: KEY_STORE.SET_GIFT_CARDS, action: storageActions.setGiftCards, init: init.giftCards },
         { key: KEY_STORE.SET_PAYMENT_DATA, action: storageActions.setPaymentData, init: init.paymentData }
       ]
-
+      // eslint-disable-next-line
       const promiseArr = storageRedux.map((item) => {
         checkLocalStoreToRedux(store, item.key, item.action, item.init)
       })
+      // const promiseArr = storageRedux.forEach((item) => {
+      //   checkLocalStoreToRedux(store, item.key, item.action, item.init)
+      // })
       await Promise.all(promiseArr)
 
       // in the case reload page: need to wait for detect connection method already in use before showing page

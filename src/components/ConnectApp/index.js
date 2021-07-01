@@ -27,11 +27,11 @@ const ConnectApp = (props) => {
       <h2 className='text text-title text-left MB30'>{messages.connectApp.connectTo}</h2>
       <Button block type='default' className='ant-big-btn btn-connect-extension MB10' onClick={onConnectViaMetaMask}>
         <span style={{float:'left',marginLeft:'10px'}}>{messages.connectApp.metamask}</span>
-        <img src={metamask} style={{float:'right',marginRight:'5px'}}/>
+        <img src={metamask} style={{float:'right',marginRight:'5px'}} alt=''/>
       </Button>
       <Button block className='ant-big-btn btn-wallet-connect ' onClick={onConnectViaWalletConnect}>
         <span style={{float:'left',marginLeft:'10px'}}>WalletConnect</span>
-        <img src={walletconnect} className='MR7' width={20} style={{float:'right',marginTop:'5px',marginRight:'5px'}} />
+        <img src={walletconnect} className='MR7' width={20} style={{float:'right',marginTop:'5px',marginRight:'5px'}} alt=''/>
       </Button>
     </div>
   )

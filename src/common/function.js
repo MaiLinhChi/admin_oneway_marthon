@@ -83,17 +83,6 @@ export const detectAddress = (address) => {
  * @param {string} title
  * @param {string} type success|error|info|warn|open|close| at https://ant.design/components/notification/
  */
-// export const showNotification = (title = null, type = 'error', description = '', className = 'notification-error', icon = '', ) => {
-//   notification[type]({
-//     message: title,
-//     description: description || '',
-//     placement: 'bottomRight',
-//     className,
-//     icon,
-//     bottom: 54,
-//     duration: 5
-//   })
-// }
 export const showNotification = (title = null, description = '', icon = '', type = 'open') => {
   notification[type]({
     message: title,
@@ -187,7 +176,10 @@ export const getCurrentBrowserLanguage = () => {
   case 'vi':
     language = 'vi'
     break
+  default:
+    break
   }
+  
   return language
 }
 
@@ -196,6 +188,7 @@ export const convertAddressArrToString = (arrAddress, numStart = 4, numEnd = 4) 
     return arrAddress[0].substring(0, numStart) + '...' + arrAddress[0].substring(arrAddress[0].length - numEnd, arrAddress[0].length)
   } else if ((arrAddress.length > 1)) {
     let stringTemp = ''
+    // eslint-disable-next-line
     arrAddress.map((item, index) => {
       index !== arrAddress.length - 1 ? stringTemp += convertAddressArrToString([item]) + '\n' : stringTemp += convertAddressArrToString([item])
     })
