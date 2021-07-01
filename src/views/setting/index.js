@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
 import {
   CCardBody,
   CCardHeader,
@@ -19,7 +20,9 @@ import { Button } from 'antd'
 import { detectAddress, convertAddressArrToString, validateAddress, showNotification, destroyNotification, isUserDeniedTransaction } from 'src/common/function';
 import { contractHightOrLow, callGetDataWeb3, postBaseSendTxs } from 'src/controller/Web3'
 import PriceInput from 'src/components/PriceInput'
-import storeRedux from 'src/controller/Redux/store/configureStore'
+import ReduxServices from "src/common/redux";
+import Observer from "src/common/observer";
+import { OBSERVER_KEY } from "src/common/constants";
 
 const Account = () => {
   const [feePercent, setFeePercent] = useState(0);
@@ -35,14 +38,17 @@ const Account = () => {
   const [collapsed, setCollapsed] = React.useState(true)
   const [isLoading, setLoading] = useState(false)
 
-  const { userData } = storeRedux.getState()
+  const userData = useSelector(state => state.userData)
 
   useEffect(() => {
     contractHightOrLow().methods.feePercent().call().then(setFeePercent);
     contractHightOrLow().methods.takeFee().call().then(setTakeFee);
-    console.log(takeFee)
     // eslint-disable-next-line
   }, [])
+
+  const handleSignIn = () => {
+    Observer.emit(OBSERVER_KEY.SIGN_IN);
+  };
 
   const onChangeFee = (value, isReset = false) => {
     setFeePercentInput(value.number)
@@ -55,9 +61,9 @@ const Account = () => {
       }
       setIsErrorFee(isError)
     } else {
-      if(!isReset){
+      if (!isReset) {
         setIsErrorFee(true)
-      setErrorMessageFee('_feePercent cannot be empty')
+        setErrorMessageFee('_feePercent cannot be empty')
       }
     }
   }
@@ -110,49 +116,54 @@ const Account = () => {
   }
 
   const handleSetFee = () => {
-    const callbackBeforeDone = () => {
-      showNotification(
-        `Setting Fee`,
-        'Waiting for transaction signature...'
-      )
-    }
-    const callbackAfterDone = async (res) => {
-      destroyNotification()
-      showNotification(
-        `Setting Fee`,
-        'Successfully'
-      )
-      contractHightOrLow().methods.feePercent().call().then(setFeePercent);
-      contractHightOrLow().methods.takeFee().call().then(setTakeFee);
-      onChangeFee({number: ''},true);
-      // setFeePercentInput('')
-      setTakeFeeInput('');
-      setLoading(false)
-    }
-    const callbackRejected = (err) => {
-      destroyNotification()
-      if (isUserDeniedTransaction(err)) {
+    const isSigned = ReduxServices.checkIsSigned()
+    if (isSigned) {
+      const callbackBeforeDone = () => {
         showNotification(
           `Setting Fee`,
-          'Transaction denied'
+          'Waiting for transaction signature...'
         )
-        setLoading(false)
-      } else {
+      }
+      const callbackAfterDone = async (res) => {
+        destroyNotification()
         showNotification(
           `Setting Fee`,
-          'Transaction failed'
+          'Successfully'
         )
+        contractHightOrLow().methods.feePercent().call().then(setFeePercent);
+        contractHightOrLow().methods.takeFee().call().then(setTakeFee);
+        onChangeFee({ number: '' }, true);
+        // setFeePercentInput('')
+        setTakeFeeInput('');
         setLoading(false)
       }
+      const callbackRejected = (err) => {
+        destroyNotification()
+        if (isUserDeniedTransaction(err)) {
+          showNotification(
+            `Setting Fee`,
+            'Transaction denied'
+          )
+          setLoading(false)
+        } else {
+          showNotification(
+            `Setting Fee`,
+            'Transaction failed'
+          )
+          setLoading(false)
+        }
+      }
+      setFee(
+        userData.address,
+        feePercentInput,
+        takeFeeInput,
+        callbackBeforeDone,
+        callbackAfterDone,
+        callbackRejected
+      )
+    } else {
+      handleSignIn()
     }
-    setFee(
-      userData.address,
-      feePercentInput,
-      takeFeeInput,
-      callbackBeforeDone,
-      callbackAfterDone,
-      callbackRejected
-    )
   }
 
   return (
@@ -173,7 +184,7 @@ const Account = () => {
                           <b>Fee Percent:</b> {feePercent}%
                         </CCol>
                         <CCol xs="6" sm="6">
-                          <b>Fee Address:</b> {<CLink href={detectAddress(takeFee)} target="_blank">{convertAddressArrToString([takeFee],8,8)}</CLink>}
+                          <b>Fee Address:</b> {<CLink href={detectAddress(takeFee)} target="_blank">{convertAddressArrToString([takeFee], 8, 8)}</CLink>}
                         </CCol>
                         <CCol xs="1" sm="1">
                           <div className="card-header-actions">
