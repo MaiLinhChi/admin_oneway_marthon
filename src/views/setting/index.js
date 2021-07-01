@@ -23,26 +23,29 @@ import PriceInput from 'src/components/PriceInput'
 import ReduxServices from "src/common/redux";
 import Observer from "src/common/observer";
 import { OBSERVER_KEY } from "src/common/constants";
+import Spinner from "../user";
 
 const Account = () => {
   const [feePercent, setFeePercent] = useState(0);
   const [feePercentInput, setFeePercentInput] = useState('');
   const [isErrorFee, setIsErrorFee] = useState(true);
   const [errorMessageFee, setErrorMessageFee] = useState('');
-
   const [takeFee, setTakeFee] = useState('');
   const [takeFeeInput, setTakeFeeInput] = useState('');
   const [isErrorTakeFeeInput, setIsErrorTakeFeeInput] = useState(true);
   const [errorMessageTakeFeeInput, setErrorMessageTakeFeeInput] = useState('');
-
+  const [loading, setLoading] = useState(false);
   const [collapsed, setCollapsed] = React.useState(true)
-  const [isLoading, setLoading] = useState(false)
 
   const userData = useSelector(state => state.userData)
 
   useEffect(() => {
+    setLoading(true)
     contractHightOrLow().methods.feePercent().call().then(setFeePercent);
-    contractHightOrLow().methods.takeFee().call().then(setTakeFee);
+    contractHightOrLow().methods.takeFee().call().then(rs => {
+      setTakeFee(rs)
+      setLoading(false)
+    });
     // eslint-disable-next-line
   }, [])
 
@@ -167,7 +170,9 @@ const Account = () => {
   }
 
   return (
-    <CRow>
+      loading
+          ? <Spinner />
+          : <CRow>
       <CCol xs="12" sm="12">
         <CCard>
           <CCardHeader>
@@ -228,8 +233,8 @@ const Account = () => {
                           className="mt-3"
                           style={{ width: "100%" }}
                           onClick={() => handleSetFee()}
-                          loading={isLoading}
-                          disabled={isErrorTakeFeeInput || isErrorFee || isLoading}
+                          loading={loading}
+                          disabled={isErrorTakeFeeInput || isErrorFee || loading}
                         >
                           Set Fee
                         </Button>
