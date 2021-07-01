@@ -71,7 +71,9 @@ const View = () => {
                     'lockedPrice': (item) => (
                           <td>{numeral(item.lockedPrice/100).format('0,0.00')}</td>
                       ),
+                    // eslint-disable-next-line
                     'closePrice': (item) => (
+                          // eslint-disable-next-line
                           <td>{item.closePrice && item.closePrice != 0 ? numeral(item.closePrice/100).format('0,0.00') : '--/--'}</td>
                       ),
                     'result': (item) => (
