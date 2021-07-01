@@ -18,7 +18,7 @@ import storeRedux from 'src/controller/Redux/store/configureStore'
 import { convertAddressArrToString, detectAddress } from 'src/common/function';
 
 const TheHeader = ({sidebarShow, setSidebarShow}) => {
-    let isSigned = ReduxServices.checkIsSigned()
+    let isSigned;
     const { userData } = storeRedux.getState()
     const handleSignIn = () => {
         Observer.emit(OBSERVER_KEY.SIGN_IN);
@@ -32,6 +32,9 @@ const TheHeader = ({sidebarShow, setSidebarShow}) => {
     const val = [false, 'responsive'].includes(sidebarShow) ? true : 'responsive'
     setSidebarShow(val);
   }
+  useEffect(() => {
+      if(userData) isSigned = ReduxServices.checkIsSigned()
+  })
 
   return (
     <CHeader withSubheader>
