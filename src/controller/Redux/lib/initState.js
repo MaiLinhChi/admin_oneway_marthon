@@ -1,5 +1,3 @@
-import { METAMASK_INFO } from 'src/common/constants'
-
 var initState = {
   lang: 'en',
   userData: null,

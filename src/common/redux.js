@@ -3,7 +3,7 @@ import MetaMaskServices from 'src/controller/MetaMask'
 import WalletConnectServices from 'src/controller/WalletConnect'
 import StorageActions from 'src/controller/Redux/actions/storageActions'
 import PageReduxAction from 'src/controller/Redux/actions/pageActions'
-import { METAMASK_INFO, CONTRACT } from 'src/common/constants'
+import { METAMASK_INFO } from 'src/common/constants'
 import { showNotification, lowerCase, getCurrentBrowserLanguage } from 'src/common/function'
 import { CONNECTION_METHOD } from './constants'
 
@@ -30,6 +30,8 @@ export default class ReduxServices {
       break
     case CONNECTION_METHOD.WALLET_CONNECT:
       WalletConnectServices.refresh()
+      break
+    default:
       break
     }
   }

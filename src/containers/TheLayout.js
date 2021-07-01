@@ -21,12 +21,13 @@ const TheLayout = () => {
   const dispatch = useDispatch();
   const dispatchSetConnectionMethod = (method) => dispatch(StorageAction.setConnectionMethod(method))
   const myModal = useRef()
-
+  
   useEffect(() => {
     Observer.on(OBSERVER_KEY.SIGN_IN, handleSignIn)
     return function cleanup() {
       Observer.removeListener(OBSERVER_KEY.SIGN_IN, handleSignIn)
     };
+  // eslint-disable-next-line
   },[]);
 
   const closeModal = () => {

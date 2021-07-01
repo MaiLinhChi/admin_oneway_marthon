@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import {
-  CButton,
   CCardBody,
   CCardHeader,
   CCol,
@@ -42,6 +41,7 @@ const Account = () => {
     contractHightOrLow().methods.feePercent().call().then(setFeePercent);
     contractHightOrLow().methods.takeFee().call().then(setTakeFee);
     console.log(takeFee)
+    // eslint-disable-next-line
   }, [])
 
   const onChangeFee = (value, isReset = false) => {
