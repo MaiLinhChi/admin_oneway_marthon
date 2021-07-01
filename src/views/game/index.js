@@ -54,7 +54,7 @@ const View = () => {
         <CCol xs="12" lg="12">
           <CCard>
             <CCardHeader>
-              Bets
+              Games
                 <div className="text-muted float-right mt-1">
                     <p className="float-left"> Total Bet Amount: <b>{numeral(totalbetAmount).format('0,0.00')}</b> - Total Commission: <b>{numeral(totalComm).format('0,0.00')}</b></p>
                 </div>
