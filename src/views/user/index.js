@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import {
-  CBadge,
   CCard,
   CCardBody,
   CCardHeader,
   CCol,
   CDataTable,
   CRow,
-    CLink
+    CLink,
+    CButton
 } from '@coreui/react'
 import moment from 'moment'
 import numeral from 'numeral'
+import { CSVLink } from "react-csv";
 import HTTP from 'src/controller/API/HTTP'
 import { ellipsisAddress } from 'src/helper/addressHelper';
 import {
-    detectAddress,
-    detectTransaction
+    detectAddress
 } from 'src/common/function';
 import Spinner from 'src/views/base/spinner';
 
@@ -27,7 +27,12 @@ const View = () => {
   const [topWinner, setTopWinner] = useState([]);
   const [totalWinAmount, setTotalWinAmount] = useState(0);
   const [totalbetAmount, settotalbetAmount] = useState(0);
-
+    const csvDataAll = [
+        { label: "Address", key: "user" },
+        { label: "Total Bet Amount", key: "totalbetAmount" },
+        { label: "Total Win Amount", key: "totalWinAmount" },
+        { label: "createdAt", key: "createdAt" },
+    ];
     const run = async () => {
         setLoading(true)
         const res = await HTTP.fetchData('/users', 'GET', {sort: 'desc', limit: 10000}, null);
@@ -49,12 +54,25 @@ const View = () => {
           <CCard>
             <CCardHeader>
               Users
+
                 <div className="text-muted float-right mt-1">
                     <p className="float-left"> Total Bet Amount: <b>{numeral(totalbetAmount).format('0,0.00')}</b> - Total Win Amount: <b>{numeral(totalWinAmount).format('0,0.00')}</b></p>
                 </div>
             </CCardHeader>
             <CCardBody>
-                <CCardHeader>Top Players </CCardHeader>
+                <CCardHeader style={{padding: '0 10px 5px 10px'}}>
+                    <b>Top Players</b>
+                    <CButton color="secondary" style={{marginLeft: 20}}>
+                        <CSVLink
+                            filename={moment().format("YYYY-MM-DD_HH-mm-ss") + "_top_players.csv"}
+                            headers={csvDataAll}
+                            data={bets}
+                        >
+                            Export CSV
+                        </CSVLink>
+                    </CButton>
+
+                </CCardHeader>
               <CDataTable
                   items={bets}
                   fields={fields}
@@ -79,7 +97,18 @@ const View = () => {
 
               />
 
-                <CCardHeader>Top Winners </CCardHeader>
+                <CCardHeader>
+                    <b>Top Winners</b>
+                    <CButton color="secondary" style={{marginLeft: 20}}>
+                        <CSVLink
+                            filename={moment().format("YYYY-MM-DD_HH-mm-ss") + "_top_winners.csv"}
+                            headers={csvDataAll}
+                            data={topWinner}
+                        >
+                            Export CSV
+                        </CSVLink>
+                    </CButton>
+                </CCardHeader>
                 <CDataTable
                     items={topWinner}
                     fields={fields}
