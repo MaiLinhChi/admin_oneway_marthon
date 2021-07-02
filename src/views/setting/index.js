@@ -58,6 +58,9 @@ const Account = () => {
       if (newValue <= 0) {
         isError = true
         setErrorMessageFee(`The minimum should be greater than 0`)
+      }else if(newValue > 100){
+        isError = true
+        setErrorMessageFee(`The maximum should be less or equal than 100`)
       }
       setIsErrorFee(isError)
     } else {
