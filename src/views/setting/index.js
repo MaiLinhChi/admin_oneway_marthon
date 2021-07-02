@@ -25,6 +25,7 @@ import PriceInput from 'src/components/PriceInput'
 import ReduxServices from "src/common/redux";
 import Observer from "src/common/observer";
 import { OBSERVER_KEY } from "src/common/constants";
+import Spinner from "../user";
 
 const Account = () => {
   const [feePercent, setFeePercent] = useState(0);
