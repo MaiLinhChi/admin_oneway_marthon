@@ -11579,6 +11579,11 @@ react-countdown@^2.3.1:
   dependencies:
     prop-types "^15.7.2"
 
+react-csv@^1.1.1:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/react-csv/-/react-csv-1.1.2.tgz#6cb47e625f51878d24bb68a120efb45a30ad243a"
+  integrity sha512-pTOTYntW+gQWzCxyEGfS5ZeOfQw4Mu3B+DJd4jrJKNuAWFQ+EEyF2Earfg0+FVEkPwMr62OLtbYCHmc6vQWj2w==
+
 react-datepicker@^3.6.0:
   version "3.8.0"
   resolved "https://registry.yarnpkg.com/react-datepicker/-/react-datepicker-3.8.0.tgz#c3bccd3e3f47aa66864a2fa75651be097414430b"
