@@ -31,7 +31,6 @@ const Account = () => {
   const [isErrorFee, setIsErrorFee] = useState(true);
   const [errorMessageFee, setErrorMessageFee] = useState('');
   const [takeFee, setTakeFee] = useState('');
-  const [takeFeeInput, setTakeFeeInput] = useState('');
   const [isErrorTakeFeeInput, setIsErrorTakeFeeInput] = useState(true);
   const [errorMessageTakeFeeInput, setErrorMessageTakeFeeInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -41,9 +40,8 @@ const Account = () => {
 
   useEffect(() => {
     setLoading(true)
-    contractHightOrLow().methods.feePercent().call().then(setFeePercent);
-    contractHightOrLow().methods.takeFee().call().then(rs => {
-      setTakeFee(rs)
+    contractHightOrLow().methods.feePercent().call().then(rs => {
+      setFeePercent(rs)
       setLoading(false)
     });
     // eslint-disable-next-line
@@ -74,21 +72,6 @@ const Account = () => {
     }
   }
 
-  const onChangeTakeFee = (e) => {
-    let value = e.target.value.toString()
-    setTakeFeeInput(value)
-    if (value !== '') {
-      let isError = false;
-      if (!validateAddress(value)) {
-        isError = true
-        setErrorMessageTakeFeeInput(`Invalid Address`)
-      }
-      setIsErrorTakeFeeInput(isError)
-    } else {
-      setIsErrorTakeFeeInput(true)
-      setErrorMessageTakeFeeInput('_takeFee cannot be empty')
-    }
-  }
   const setFee = async (
     fromAddress,
     feePercent,
@@ -140,7 +123,6 @@ const Account = () => {
         contractHightOrLow().methods.takeFee().call().then(setTakeFee);
         onChangeFee({ number: '' }, true);
         // setFeePercentInput('')
-        setTakeFeeInput('');
         setLoading(false)
       }
       const callbackRejected = (err) => {
@@ -162,7 +144,6 @@ const Account = () => {
       setFee(
         userData.address,
         feePercentInput,
-        takeFeeInput,
         callbackBeforeDone,
         callbackAfterDone,
         callbackRejected
@@ -188,12 +169,10 @@ const Account = () => {
                   <CCard>
                     <CCardHeader>
                       <CRow>
-                        <CCol xs="5" sm="5">
+                        <CCol>
                           <b>Fee Percent:</b> {feePercent}%
                         </CCol>
-                        <CCol xs="6" sm="6">
-                          <b>Fee Address:</b> {<CLink href={detectAddress(takeFee)} target="_blank">{convertAddressArrToString([takeFee], 8, 8)}</CLink>}
-                        </CCol>
+
                         <CCol xs="1" sm="1">
                           <div className="card-header-actions">
                             <CLink className="card-header-action" onClick={() => setCollapsed(!collapsed)}>
@@ -225,10 +204,6 @@ const Account = () => {
 
                         <CFormGroup style={{ marginTop: '1.5rem' }}>
                           <CLabel htmlFor="liquidation-ratio"> _takeFee (address) </CLabel>
-                          <CInputGroup>
-                            <CInput type="text" placeholder="_takeFee (address)" onChange={onChangeTakeFee} value={takeFeeInput} style={{ color: "black" }} />
-                            {isErrorTakeFeeInput && <span className='address-input-error'>{errorMessageTakeFeeInput}</span>}
-                          </CInputGroup>
                         </CFormGroup>
 
                         <Button

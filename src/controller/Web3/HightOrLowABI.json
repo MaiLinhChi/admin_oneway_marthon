@@ -74,6 +74,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -104,23 +111,11 @@
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
         "name": "_feePercent",
         "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_takeFee",
-        "type": "address"
       }
     ],
     "name": "setFee",
@@ -137,6 +132,24 @@
       }
     ],
     "name": "setNewestGameIndex",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_shareCommAddress",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_percent",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "setShareCommAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -171,6 +184,10 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "fallback"
   },
   {
     "inputs": [
@@ -256,6 +273,25 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "commAddress",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "feePercent",
     "outputs": [
@@ -332,6 +368,11 @@
         "internalType": "string",
         "name": "transactionHash",
         "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "comm",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -631,6 +672,19 @@
   },
   {
     "inputs": [],
+    "name": "getShareCommAddress",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "newestGameIndex",
     "outputs": [
       {
@@ -656,8 +710,14 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "takeFee",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "shareCommAddress",
     "outputs": [
       {
         "internalType": "address",
