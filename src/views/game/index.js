@@ -84,7 +84,7 @@ const View = () => {
                           </CBadge> : '--/--'}</td>
                       ),
                       'comm': (item) => (
-                          <td>{numeral(item.comm).format('0,0.00000000')}</td>
+                          <td>{numeral(item.comm).format('0,0.00')}</td>
                       ),
                       'createdAt': (item)=>(
                           <td>{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</td>
