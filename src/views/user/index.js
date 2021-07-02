@@ -60,6 +60,8 @@ const View = () => {
                 </div>
             </CCardHeader>
             <CCardBody>
+                <CRow>
+                <CCol xs="12" lg="6">
                 <CCardHeader style={{padding: '0 10px 5px 10px'}}>
                     <b>Top Players</b>
                     <CButton color="secondary" style={{marginLeft: 20}}>
@@ -96,8 +98,9 @@ const View = () => {
                   }}
 
               />
-
-                <CCardHeader>
+                </CCol>
+                <CCol xs="12" lg="6">
+                <CCardHeader style={{padding: '0 10px 5px 10px'}}>
                     <b>Top Winners</b>
                     <CButton color="secondary" style={{marginLeft: 20}}>
                         <CSVLink
@@ -132,6 +135,8 @@ const View = () => {
                     }}
 
                 />
+                </CCol>
+                </CRow>
             </CCardBody>
           </CCard>
         </CCol>

@@ -74,6 +74,7 @@ const View = () => {
                     'lockedPrice': (item) => (
                           <td>{numeral(item.lockedPrice/100).format('0,0.00')}</td>
                       ),
+
                     'closePrice': (item) => (
                           <td>{item.closePrice && item.closePrice != 0 ? numeral(item.closePrice/100).format('0,0.00') : '--/--'}</td>
                       ),
@@ -81,6 +82,9 @@ const View = () => {
                           <td>{item.result ? <CBadge color={getBadge(item.result)}>
                               {item.result}
                           </CBadge> : '--/--'}</td>
+                      ),
+                      'comm': (item) => (
+                          <td>{numeral(item.comm/100).format('0,0.00')}</td>
                       ),
                       'createdAt': (item)=>(
                           <td>{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</td>
