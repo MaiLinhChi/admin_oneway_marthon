@@ -319,8 +319,6 @@ const Account = () => {
 
   const handleSetShareCommAddress= async() => {
     let ownerAddress = await contractHightOrLow().methods.owner().call();
-    console.log("userData.address",userData.address);
-    console.log("ownerAddress",ownerAddress.toLowerCase());
     if(userData.address !== ownerAddress.toLowerCase()){
       showNotification(
         `Set Share Error`,
