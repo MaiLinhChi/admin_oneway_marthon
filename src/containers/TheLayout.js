@@ -41,7 +41,7 @@ const TheLayout = () => {
       dispatchSetConnectionMethod(CONNECTION_METHOD.METAMASK)
       MetaMaskServices.initialize()
     }
-    console.log("metamaskRedux",metamaskRedux);
+
   // eslint-disable-next-line
   },[metamaskRedux.address]);
 
