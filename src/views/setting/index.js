@@ -330,15 +330,15 @@ const Account = () => {
     }
 
     // eslint-disable-next-line
-    if(getRemainingPercent(commAddressList) != 0){
-      showNotification(
-        `Set Share Error`,
-        'You must allocate 100%',
-        null,
-        'error'
-      )
-      return
-    }
+    // if(getRemainingPercent(commAddressList) != 0){
+    //   showNotification(
+    //     `Set Share Error`,
+    //     'You must allocate 100%',
+    //     null,
+    //     'error'
+    //   )
+    //   return
+    // }
     const isSigned = ReduxServices.checkIsSigned()
     if (isSigned) {
       setLoadingComm(true)
@@ -473,7 +473,7 @@ const Account = () => {
                     <CCardHeader>
                       <CRow>
                         <CCol xs="11" sm="11">
-                          <b>Fee Taker List</b>
+                          <b>{`Fee Taker List( ${feePercent}% commission from total profit)`}</b>
                         </CCol>
                         <CCol xs="1" sm="1">
                           <div className="card-header-actions">
@@ -542,7 +542,7 @@ const Account = () => {
                         className="mt-2"
                         style={{ width: "100%" }}
                         loading={isLoadingComm}
-                        disabled={ commAddressList.length === 0 || isLoadingComm}
+                        disabled={ commAddressList.length === 0 || isLoadingComm || getRemainingPercent(commAddressList) != 0}
                         onClick={handleSetShareCommAddress}
                       >
                         Save
