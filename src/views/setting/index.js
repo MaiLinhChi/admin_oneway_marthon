@@ -44,7 +44,7 @@ const Account = () => {
   const [commAddressList, setCommAddressList] = useState([]);
 
   const [collapsed, setCollapsed] = React.useState(true)
-  const [collapsedAddressList, setCollapsedAddressList] = React.useState(false)
+  const [collapsedAddressList, setCollapsedAddressList] = React.useState(true)
   const [isLoading, setLoading] = useState(false)
   const [isLoadingComm, setLoadingComm] = useState(false)
 
@@ -84,7 +84,7 @@ const Account = () => {
     let commAddressList = await contractHightOrLow().methods.getShareCommAddress().call();
     let commListTemp = []
     let result = []
-  
+
     if (commAddressList != null && commAddressList.length && commAddressList.length > 0) {
       commListTemp = commAddressList.map(async (address, index) => {
         let percent = await contractHightOrLow().methods.commAddress(address).call();
