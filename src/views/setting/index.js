@@ -65,7 +65,7 @@ const Account = () => {
       align: 'center'
     },
     {
-      title: '',
+      title: <span className="deleteButton" onClick={() => setCommAddressList([])}><DeleteOutlined /></span>,
       dataIndex: 'deleteAddress',
       key: 'deleteAddress',
       align: 'center',
@@ -406,10 +406,10 @@ const Account = () => {
                   <CCard>
                     <CCardHeader>
                       <CRow>
-                        <CCol xs="11" sm="11">
+                        <CCol xs="11" sm="10">
                           <b>Fee Percent:</b> {feePercent}%
                         </CCol>
-                        <CCol xs="1" sm="1">
+                        <CCol xs="1" sm="2">
                           <div className="card-header-actions">
                             <CLink className="card-header-action" onClick={() => setCollapsed(!collapsed)}>
                               <CIcon name={collapsed ? 'cil-chevron-bottom' : 'cil-chevron-top'} />
@@ -472,10 +472,10 @@ const Account = () => {
 
                     <CCardHeader>
                       <CRow>
-                        <CCol xs="11" sm="11">
-                          <b>{`Fee Taker List( ${feePercent}% commission from total profit)`}</b>
+                        <CCol xs="11" sm="10">
+                          <b>{`Fee Taker List (${feePercent}% commission from total profit)`}</b>
                         </CCol>
-                        <CCol xs="1" sm="1">
+                        <CCol xs="1" sm="2">
                           <div className="card-header-actions">
                             <CLink className="card-header-action" onClick={() => setCollapsedAddressList(!collapsedAddressList)}>
                               <CIcon name={collapsedAddressList ? 'cil-chevron-bottom' : 'cil-chevron-top'} />
@@ -490,9 +490,9 @@ const Account = () => {
                         <Table dataSource={convertRawToTableData(commAddressList)} columns={columns} pagination={false} />
                       </CCardBody>
                     </CCollapse>
-                    <CCardFooter style={{ textAlign: "right" }} >
+                    {/* <CCardFooter style={{ textAlign: "right" }} >
                       <span className="deleteButton" onClick={() => setCommAddressList([])}>Clear All</span>
-                    </CCardFooter>
+                    </CCardFooter> */}
                   </CCard>
 
                   {/* Add Form Card */}
