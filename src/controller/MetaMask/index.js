@@ -8,7 +8,6 @@ let onboarding
 export default class MetaMaskServices {
   static async initialize () {
     try {
-      console.log("aaaa");
       if (!onboarding) {
         onboarding = new MetaMaskOnboarding()
       }
@@ -72,8 +71,8 @@ export default class MetaMaskServices {
       const networkId = await window.ethereum.request({
         method: 'net_version'
       })
+
       const findNetwork = parseInt(process.env.REACT_APP_NETWORK_ID)
-      console.log(chainId, networkId, findNetwork)
       if (networkId !== findNetwork) {
         await this.addNewChain(findNetwork)
       }
