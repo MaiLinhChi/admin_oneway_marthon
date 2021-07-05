@@ -36,6 +36,15 @@ const TheLayout = () => {
   // eslint-disable-next-line
   },[]);
 
+  useEffect(() => {
+    if(metamaskRedux && metamaskRedux.address){
+      dispatchSetConnectionMethod(CONNECTION_METHOD.METAMASK)
+      MetaMaskServices.initialize()
+    }
+    console.log("metamaskRedux",metamaskRedux);
+  // eslint-disable-next-line
+  },[metamaskRedux.address]);
+
   const closeModal = () => {
     myModal.current && myModal.current.closeModal()
   }

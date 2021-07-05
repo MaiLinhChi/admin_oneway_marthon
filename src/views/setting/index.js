@@ -109,9 +109,9 @@ const Account = () => {
       if (newValue <= 0) {
         isError = true
         setErrorMessageFee(`The minimum should be greater than 0`)
-      } else if (newValue > 100) {
+      } else if (newValue >= 100) {
         isError = true
-        setErrorMessageFee(`The maximum should be less or equal than 100`)
+        setErrorMessageFee(`The maximum should be less than 100`)
       }
       setIsErrorFee(isError)
     } else {
@@ -317,7 +317,20 @@ const Account = () => {
     })
   }
 
-  const handleSetShareCommAddress= () => {
+  const handleSetShareCommAddress= async() => {
+    let ownerAddress = await contractHightOrLow().methods.owner().call();
+    console.log("userData.address",userData.address);
+    console.log("ownerAddress",ownerAddress.toLowerCase());
+    if(userData.address !== ownerAddress.toLowerCase()){
+      showNotification(
+        `Set Share Error`,
+        'Please, connect to the owner address',
+        null,
+        'error'
+      )
+      return
+    }
+
     // eslint-disable-next-line
     if(getRemainingPercent(commAddressList) != 0){
       showNotification(
