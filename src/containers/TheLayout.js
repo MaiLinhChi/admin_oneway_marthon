@@ -5,7 +5,7 @@ import {
   TheSidebar,
   TheHeader
 } from './index'
-
+import storeRedux from 'src/controller/Redux/store/configureStore'
 import { OBSERVER_KEY, CONNECTION_METHOD } from 'src/common/constants'
 import { isMobile } from 'react-device-detect'
 import MetaMaskServices from 'src/controller/MetaMask'
@@ -24,6 +24,12 @@ const TheLayout = () => {
   
   useEffect(() => {
     Observer.on(OBSERVER_KEY.SIGN_IN, handleSignIn)
+    const { metamaskRedux} = storeRedux.getState()
+
+    if(metamaskRedux && metamaskRedux.address){
+      dispatchSetConnectionMethod(CONNECTION_METHOD.METAMASK)
+      MetaMaskServices.initialize()
+    }
     return function cleanup() {
       Observer.removeListener(OBSERVER_KEY.SIGN_IN, handleSignIn)
     };

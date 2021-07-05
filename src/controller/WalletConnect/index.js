@@ -29,7 +29,7 @@ export default class WalletConnectServices {
       // check if already connected
       if (!connector.connected) {
         // create new session
-        await connector.createSession({ chainId: process.env.REACT_APP_CHAIN_ID })
+        await connector.createSession({ chainId: process.env.REACT_APP_NETWORK_ID })
       } else {
         // get updated accounts and chainId
         const { accounts, chainId, peerMeta } = connector
@@ -62,7 +62,7 @@ export default class WalletConnectServices {
       // check if already connected
       if (!connector.connected) {
         // create new session
-        await connector.createSession({ chainId: process.env.REACT_APP_CHAIN_ID })
+        await connector.createSession({ chainId: process.env.REACT_APP_NETWORK_ID })
       } else {
         // get updated accounts and chainId
         const { accounts, chainId, peerMeta } = connector
@@ -136,8 +136,6 @@ export default class WalletConnectServices {
     const address = accounts[0]
     const callbackSignIn = async () => {
       Observer.emit(OBSERVER_KEY.ALREADY_SIGNED)
-      await ReduxServices.getUserStakeDataDetail();
-      await ReduxServices.getUserUnstakedDataDetail();
     }
     // update redux state
     await ReduxServices.updateWalletConnect({
@@ -159,8 +157,6 @@ export default class WalletConnectServices {
     // update redux state
     ReduxServices.updateWalletConnect(INITIAL_STATE)
     ReduxServices.resetUser()
-    await ReduxServices.getUserStakeDataDetail();
-    await ReduxServices.getUserUnstakedDataDetail();
     Observer.emit(OBSERVER_KEY.CHANGED_ACCOUNT)
     removeDataLocal('wallet_connect_session')
   }

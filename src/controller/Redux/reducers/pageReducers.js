@@ -25,3 +25,9 @@ export const tomoPrice = createReducer(initState.tomoPrice, {
     return action.payload
   }
 })
+
+export const walletConnect = createReducer(initState.walletConnect, {
+  [KEY_PAGE.SET_WALLET_CONNECT] (state, action) {
+    return action.payload
+  }
+})

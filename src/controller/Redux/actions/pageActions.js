@@ -25,4 +25,10 @@ export default class PageReduxAction {
       payload
     }
   }
+  static setWalletConnect (payload) {
+    return {
+      type: KEY_PAGE.SET_WALLET_CONNECT,
+      payload
+    }
+  }
 }
