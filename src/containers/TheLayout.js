@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useSelector,useDispatch } from 'react-redux'
 import {
   TheContent,
   TheSidebar,
   TheHeader
 } from './index'
-import storeRedux from 'src/controller/Redux/store/configureStore'
 import { OBSERVER_KEY, CONNECTION_METHOD } from 'src/common/constants'
 import { isMobile } from 'react-device-detect'
 import MetaMaskServices from 'src/controller/MetaMask'
@@ -18,13 +17,14 @@ const TheLayout = () => {
 
   const [sidebarShow, setSidebarShow] = useState(true);
 
+  const metamaskRedux = useSelector(state => state.metamaskRedux)
   const dispatch = useDispatch();
   const dispatchSetConnectionMethod = (method) => dispatch(StorageAction.setConnectionMethod(method))
   const myModal = useRef()
+
   
   useEffect(() => {
     Observer.on(OBSERVER_KEY.SIGN_IN, handleSignIn)
-    const { metamaskRedux} = storeRedux.getState()
 
     if(metamaskRedux && metamaskRedux.address){
       dispatchSetConnectionMethod(CONNECTION_METHOD.METAMASK)
