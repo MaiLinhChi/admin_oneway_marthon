@@ -292,7 +292,7 @@ export default class HTTP {
         params.data = postData;
       }
 
-      let auth = localStorage.getItem('userAuth');
+      let auth = auth ? localStorage.getItem('userAuth') : auth;
       if (auth) {
         auth = `Bearer ${JSON.parse(auth).token}`;
         params.headers = {
