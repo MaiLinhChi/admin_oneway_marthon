@@ -36,7 +36,7 @@ const Account = () => {
       setLoading(false)
     } catch (error) {
       showNotification('Invalid credential!!!');
-      window.location = '/login'
+      window.location = '/#/login'
       setLoading(false)
     }
   };
