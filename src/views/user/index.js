@@ -35,7 +35,7 @@ const View = () => {
     ];
     const run = async () => {
         setLoading(true)
-        const res = await HTTP.fetchData('/users', 'GET', {sort: 'desc', limit: 10000}, null);
+        const res = await HTTP.fetchData('/users', 'GET', {sort: 'desc', limit: 10000000000}, null);
         setBets(res.data)
         setTotalWinAmount(res.totalWinAmount)
         settotalbetAmount(res.totalbetAmount)

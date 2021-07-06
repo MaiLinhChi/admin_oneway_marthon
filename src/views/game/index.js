@@ -37,7 +37,7 @@ const View = () => {
 
     const run = async () => {
         setLoading(true)
-        const res = await HTTP.fetchData('/games', 'GET', {sort: 'desc', limit: 10000}, null);
+        const res = await HTTP.fetchData('/games', 'GET', {sort: 'desc', limit: 10000000000}, null);
         setBets(res.data)
         setTotalComm(res.totalComm)
         settotalbetAmount(res.totalbetAmount)

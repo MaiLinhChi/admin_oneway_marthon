@@ -35,7 +35,7 @@ const View = () => {
 
     const run = async () => {
         setLoading(true)
-        const res = await HTTP.fetchData('/bets', 'GET', {sort: 'desc', limit: 10000}, null);
+        const res = await HTTP.fetchData('/bets', 'GET', {sort: 'desc', limit: 10000000000}, null);
         setBets(res.data)
         // setTotalPage(res.totalPage)
         setLoading(false)
