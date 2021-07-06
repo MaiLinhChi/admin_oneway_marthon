@@ -30,7 +30,7 @@ const Login = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const checkUserAuthentication = async () => {
-    localStorage.setItem('userAuth', null)
+    localStorage.removeItem('userAuth')
     // let userAuth = await getDataLocal('userAuth')
     // if (userAuth) {
     //   history.push('/')
