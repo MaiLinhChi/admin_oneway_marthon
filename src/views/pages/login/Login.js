@@ -30,10 +30,11 @@ const Login = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const checkUserAuthentication = async () => {
-    let userAuth = await getDataLocal('userAuth')
-    if (userAuth) {
-      history.push('/')
-    }
+    localStorage.setItem(userAuth, null)
+    // let userAuth = await getDataLocal('userAuth')
+    // if (userAuth) {
+    //   history.push('/')
+    // }
   }
   const onChangeUsername = (e) => {
     let value = e.target.value
