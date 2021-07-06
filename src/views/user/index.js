@@ -89,6 +89,9 @@ const View = () => {
                       'totalbetAmount': (item) => (
                           <td>{numeral(item.totalbetAmount).format('0,0.00')}</td>
                       ),
+                      'totalWinAmount': (item) => (
+                          <td>{numeral(item.totalWinAmount).format('0,0.00')}</td>
+                      ),
                       'lockedPrice': (item) => (
                           <td>{numeral(item.totalWinAmount).format('0,0.00')}</td>
                       ),
@@ -125,6 +128,9 @@ const View = () => {
                         ),
                         'totalbetAmount': (item) => (
                             <td>{numeral(item.totalbetAmount).format('0,0.00')}</td>
+                        ),
+                        'totalWinAmount': (item) => (
+                            <td>{numeral(item.totalWinAmount).format('0,0.00')}</td>
                         ),
                         'lockedPrice': (item) => (
                             <td>{numeral(item.totalWinAmount).format('0,0.00')}</td>

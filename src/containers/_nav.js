@@ -38,7 +38,7 @@ const _nav =  [
     _tag: 'CSidebarNavItem',
     name: 'Account',
     to: '/account',
-    icon: <CIcon name="cil-star" customClasses="c-sidebar-nav-icon"/>
+    icon: <CIcon name="cil-user-follow" customClasses="c-sidebar-nav-icon"/>
   },
   {
     _tag: 'CSidebarNavItem',
