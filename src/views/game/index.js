@@ -19,6 +19,7 @@ import { ellipsisAddress } from "src/helper/addressHelper";
 import { detectAddress, detectTransaction } from "src/common/function";
 import Spinner from "src/views/base/spinner";
 import { DatePicker } from "antd";
+import { TextField } from "@material-ui/core";
 
 const { RangePicker } = DatePicker;
 
@@ -54,8 +55,8 @@ const View = () => {
 
   const run = async () => {
     setLoading(true);
-    let res
-    if(fromDate && toDate){
+    let res;
+    if (fromDate && toDate) {
       res = await HTTP.fetchData(
         "/games",
         "GET",
@@ -67,7 +68,7 @@ const View = () => {
         },
         null
       );
-    } else{
+    } else {
       res = await HTTP.fetchData(
         "/games",
         "GET",
@@ -78,7 +79,7 @@ const View = () => {
         null
       );
     }
-    
+
     setBets(res.data);
     setTotalComm(res.totalComm);
     settotalbetAmount(res.totalbetAmount);
@@ -88,18 +89,23 @@ const View = () => {
     run();
   }, []);
 
-  const handleChangeSearchTime = (e) => {
-    if (e !== null) {
-      setFromDate(e[0]._d);
-      setToDate(e[1]._d);
-    } else {
-      setFromDate(null)
-      setToDate(null)
+  const onChangeFromDate = (e) => {
+    const value = new Date(e.target.value);
+    if (value > toDate) {
+      setToDate(value);
     }
+    setFromDate(value);
   };
-  return loading ? (
-    <Spinner />
-  ) : (
+
+  const onChangeToDate = (e) => {
+    const value = new Date(e.target.value);
+    if (value < fromDate) {
+      setFromDate(value);
+    }
+    setToDate(value);
+  };
+
+  return (
     <CRow>
       <CCol xs="12" lg="12">
         <CCard>
@@ -110,36 +116,62 @@ const View = () => {
               flexWrap: "wrap",
             }}
           >
-            <div style={{ display: "flex", alignItems: "baseline" }}>
-              <span
+            <div style={{ display: "flex", alignItems: "flex-start" }}>
+              <span>Games</span>
+
+              <CFormGroup
                 style={{
-                  borderRight: "2px solid #c9c9c9",
-                  paddingRight: "10px",
+                  marginLeft: "10px",
+                  paddingLeft: "10px",
+                  borderLeft: "2px solid #c9c9c9",
                 }}
               >
-                Games
-              </span>
-
-              <CFormGroup style={{ marginLeft: "10px", display: "flex" }}>
-                <CInputGroup>
-                  <RangePicker
-                    onChange={handleChangeSearchTime}
-                    style={{ width: "100%" }}
-                    showTime
-                  />
-                </CInputGroup>
-
-                <CButton
-                  color="secondary"
-                  style={{
-                    marginLeft: "10px",
-                    minWidth: "100px",
-                  }}
-                  disabled={!fromDate || !toDate}
-                  onClick={() => run()}
-                >
-                  Search
-                </CButton>
+                <CRow>
+                  <CCol lg={5} xs={12}>
+                    <TextField
+                      type="datetime-local"
+                      label="From date"
+                      value={
+                        fromDate
+                          ? moment(fromDate).format("YYYY-MM-DDTHH:mm")
+                          : ""
+                      }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      onChange={onChangeFromDate}
+                    />
+                  </CCol>
+                  <CCol lg={5} xs={12}>
+                    <TextField
+                      type="datetime-local"
+                      label="To date"
+                      value={
+                        toDate ? moment(toDate).format("YYYY-MM-DDTHH:mm") : ""
+                      }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      onChange={onChangeToDate}
+                    />
+                  </CCol>
+                  <CCol
+                    style={{ display: "flex", alignItems: "flex-end" }}
+                    xs={12}
+                    lg={2}
+                  >
+                    <CButton
+                      color="secondary"
+                      style={{
+                        marginTop: '10px',
+                        minWidth: "80px",
+                      }}
+                      onClick={() => run()}
+                    >
+                      Search
+                    </CButton>
+                  </CCol>
+                </CRow>
               </CFormGroup>
             </div>
             <div className="text-muted float-right mt-1">
@@ -156,6 +188,7 @@ const View = () => {
               items={bets}
               fields={fields}
               striped
+              loading={loading}
               columnFilter
               itemsPerPage={20}
               pagination

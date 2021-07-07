@@ -90,9 +90,7 @@ const View = () => {
     }
   };
 
-  return loading ? (
-    <Spinner />
-  ) : (
+  return (
     <CRow>
       <CCol xs="12" lg="12">
         <CCard>
@@ -161,6 +159,7 @@ const View = () => {
                   </CButton>
                 </CCardHeader>
                 <CDataTable
+                  loading={loading}
                   items={bets}
                   fields={fields}
                   striped
@@ -213,6 +212,7 @@ const View = () => {
                   items={topWinner}
                   fields={fields}
                   striped
+                  loading={loading}
                   columnFilter
                   itemsPerPage={20}
                   pagination
