@@ -12,6 +12,14 @@
     color: #ff4d4f;
     font-size: 14px;
   }
+.input-error {
+    position: absolute;
+    left: 0;
+    top: 40px;
+    line-height: 20px;
+    color: #ff4d4f;
+    font-size: 14px;
+}
 .deleteButton{
     cursor: pointer;
     &:hover{
