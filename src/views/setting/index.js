@@ -89,7 +89,11 @@ const Account = () => {
     React.useState(true);
   const [isLoading, setLoading] = useState(false);
   const [isLoadingComm, setLoadingComm] = useState(false);
-  const [loadingSettingMaintenance,setLoadingSettingMaintenance] = useState(false)
+  const [loadingSettingMaintenance, setLoadingSettingMaintenance] =
+    useState(false);
+  const [loadingListMaintenance,setLoadingListMaintenance] = useState(false)
+
+  const [mountRangeTime, setMountRangeTime] = useState(true);
 
   const userData = useSelector((state) => state.userData);
 
@@ -133,34 +137,52 @@ const Account = () => {
   const columnsMaintenanceList = [
     {
       title: "Message",
-      dataIndex: "message",
+      dataIndex: "data",
       key: "message",
+      render: data =><span>{data?.message}</span>
     },
     {
       title: "Start Time",
-      dataIndex: "startTime",
+      dataIndex: "data",
       key: "startTime",
+      render: data => <span>{data?.startTime}</span>
     },
     {
       title: "End Time",
-      dataIndex: "endTime",
+      dataIndex: "data",
       key: "endTime",
+      render: data => <span>{data?.endTime}</span>
     },
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: "data",
       key: "status",
       align: "center",
-      render: (status) => (
-        <span style={{ textTransform: "capitalize" }}>{status}</span>
+      render: data => (
+        <span style={{ textTransform: "capitalize" }}>{data?.status}</span>
       ),
     },
   ];
 
+  const getListMaintenance = async () =>{
+    setLoadingListMaintenance(true)
+    const res = await HTTP.fetchData(
+      "/configs",
+      "GET",
+      {
+        key: 'maintenance'
+      },
+      null
+    );
+    setMaintenanceList(res)
+    setLoadingListMaintenance(false)
+  }
+  console.log(maintenanceList);
   useEffect(() => {
     contractHightOrLow().methods.feePercent().call().then(setFeePercent);
     // eslint-disable-next-line
     getCommData();
+    getListMaintenance()
   }, []);
 
   const getCommData = async () => {
@@ -501,6 +523,15 @@ const Account = () => {
     }
   };
 
+  const clearDate = () => {
+    setMessage("");
+    setStartTime(null);
+    setEndTime(null);
+    setStatus("suspense");
+    setMountRangeTime(false)
+    setTimeout(()=>setMountRangeTime(true),0)
+  };
+
   const handleSettingMaintenance = async () => {
     if (message.trim() === "" || startTime === null || endTime === null) {
       showNotification(
@@ -508,7 +539,7 @@ const Account = () => {
         "Setting maintenance cannot be blank!"
       );
     } else {
-      setLoadingSettingMaintenance(true)
+      setLoadingSettingMaintenance(true);
       HTTP.fetchData(`/config/maintenance`, `POST`, null, {
         data: {
           message,
@@ -516,23 +547,16 @@ const Account = () => {
           endTime: moment(endTime).format("YYYY-MM-DD HH:mm:ss"),
           status,
         },
-      }).then((res)=>{
-        showNotification(
-          `Setting maintenance`,
-          "Successfully!"
-        );
-        setLoadingSettingMaintenance(false)
-        setMessage("")
-        setStartTime(null)
-        setEndTime(null)
-        setStatus('suspense')
-      }).catch((err)=>{
-        showNotification(
-          `Setting maintenance`,
-          "Fail!"
-        );
-        setLoadingSettingMaintenance(false)
       })
+        .then((res) => {
+          showNotification(`Setting maintenance`, "Successfully!");
+          clearDate();
+          setLoadingSettingMaintenance(false);
+        })
+        .catch((err) => {
+          showNotification(`Setting maintenance`, "Fail!");
+          setLoadingSettingMaintenance(false);
+        });
     }
   };
 
@@ -588,7 +612,7 @@ const Account = () => {
                       <CCardBody>
                         <CFormGroup>
                           <CLabel htmlFor="liquidation-ratio">
-                            _feePercent (uint256){" "}
+                            _feePercent (uint256)
                           </CLabel>
                           <CInputGroup>
                             <PriceInput
@@ -669,6 +693,7 @@ const Account = () => {
                     <CCollapse show={collapsedMaintenanceList}>
                       <CCardBody>
                         <Table
+                          loading={loadingListMaintenance}
                           dataSource={maintenanceList}
                           columns={columnsMaintenanceList}
                           pagination={false}
@@ -694,24 +719,26 @@ const Account = () => {
                         </CInputGroup>
                       </CFormGroup>
 
-                      <CFormGroup style={{ marginTop: "1.5rem" }}>
-                        <CLabel>Start Time ~ End Time</CLabel>
-                        <CInputGroup>
-                          <RangePicker
-                            // value={[startTime,endTime]}
-                            disabledDate={disabledDate}
-                            placeholder={["Start Time", "End Time"]}
-                            style={{ width: "100%" }}
-                            showTime
-                            onChange={handleChangeTime}
-                          />
-                          {isErrorTime && (
-                            <span className="input-error">
-                              {errorMessageTime}
-                            </span>
-                          )}
-                        </CInputGroup>
-                      </CFormGroup>
+                      {mountRangeTime && (
+                        <CFormGroup style={{ marginTop: "1.5rem" }}>
+                          <CLabel>Start Time ~ End Time</CLabel>
+                          <CInputGroup>
+                            <RangePicker
+                              // value={[startTime,endTime]}
+                              disabledDate={disabledDate}
+                              placeholder={["Start Time", "End Time"]}
+                              style={{ width: "100%" }}
+                              showTime
+                              onChange={handleChangeTime}
+                            />
+                            {isErrorTime && (
+                              <span className="input-error">
+                                {errorMessageTime}
+                              </span>
+                            )}
+                          </CInputGroup>
+                        </CFormGroup>
+                      )}
 
                       <CFormGroup style={{ marginTop: "1.5rem" }}>
                         <CLabel>Status:</CLabel>
