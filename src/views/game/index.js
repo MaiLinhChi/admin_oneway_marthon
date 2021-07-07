@@ -62,8 +62,8 @@ const View = () => {
       "GET",
       {
         sort: "desc",
-        fromDate: moment(fromDate).format("YYYY-MM-DD"),
-        toDate: moment(toDate).format("YYYY-MM-DD"),
+        fromDate: moment(fromDate).format("YYYY-MM-DD HH:mm:ss"),
+        toDate: moment(toDate).format("YYYY-MM-DD HH:mm:ss"),
         limit: 10000000000,
       },
       null
@@ -112,6 +112,7 @@ const View = () => {
                     defaultValue={[moment(fromDate), moment(toDate)]}
                     onChange={handleChangeSearchTime}
                     style={{ width: "100%" }}
+                    showTime
                   />
                 </CInputGroup>
 
