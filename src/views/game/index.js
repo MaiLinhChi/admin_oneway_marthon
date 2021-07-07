@@ -49,25 +49,36 @@ const View = () => {
   const [totalComm, setTotalComm] = useState(0);
   const [totalbetAmount, settotalbetAmount] = useState(0);
 
-  const currentDate = new Date();
-  const [fromDate, setFromDate] = useState(
-    new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-  );
-  const [toDate, setToDate] = useState(currentDate);
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
 
   const run = async () => {
     setLoading(true);
-    const res = await HTTP.fetchData(
-      "/games",
-      "GET",
-      {
-        sort: "desc",
-        fromDate: moment(fromDate).format("YYYY-MM-DD HH:mm:ss"),
-        toDate: moment(toDate).format("YYYY-MM-DD HH:mm:ss"),
-        limit: 10000000000,
-      },
-      null
-    );
+    let res
+    if(fromDate && toDate){
+      res = await HTTP.fetchData(
+        "/games",
+        "GET",
+        {
+          sort: "desc",
+          fromDate: fromDate.getTime(),
+          toDate: toDate.getTime(),
+          limit: 10000000000,
+        },
+        null
+      );
+    } else{
+      res = await HTTP.fetchData(
+        "/games",
+        "GET",
+        {
+          sort: "desc",
+          limit: 10000000000,
+        },
+        null
+      );
+    }
+    
     setBets(res.data);
     setTotalComm(res.totalComm);
     settotalbetAmount(res.totalbetAmount);
@@ -81,6 +92,9 @@ const View = () => {
     if (e !== null) {
       setFromDate(e[0]._d);
       setToDate(e[1]._d);
+    } else {
+      setFromDate(null)
+      setToDate(null)
     }
   };
   return loading ? (
@@ -109,7 +123,6 @@ const View = () => {
               <CFormGroup style={{ marginLeft: "10px", display: "flex" }}>
                 <CInputGroup>
                   <RangePicker
-                    defaultValue={[moment(fromDate), moment(toDate)]}
                     onChange={handleChangeSearchTime}
                     style={{ width: "100%" }}
                     showTime
@@ -122,6 +135,7 @@ const View = () => {
                     marginLeft: "10px",
                     minWidth: "100px",
                   }}
+                  disabled={!fromDate || !toDate}
                   onClick={() => run()}
                 >
                   Search
