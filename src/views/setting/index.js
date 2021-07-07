@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   CCardBody,
   CCardHeader,
@@ -14,150 +14,241 @@ import {
   CFade,
   CLink,
   CFormGroup,
-  CCardFooter
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react';
-import { Button, Table } from 'antd'
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
-import { detectAddress, convertAddressArrToString, validateAddress, showNotification, destroyNotification, isUserDeniedTransaction } from 'src/common/function';
-import { contractHightOrLow, callGetDataWeb3, postBaseSendTxs } from 'src/controller/Web3'
-import PriceInput from 'src/components/PriceInput'
+  CCardFooter,
+} from "@coreui/react";
+import CIcon from "@coreui/icons-react";
+import { Button, DatePicker, Radio, Table } from "antd";
+import { PlusOutlined, DeleteOutlined, LikeOutlined, DislikeOutlined } from "@ant-design/icons";
+import {
+  detectAddress,
+  convertAddressArrToString,
+  validateAddress,
+  showNotification,
+  destroyNotification,
+  isUserDeniedTransaction,
+} from "src/common/function";
+import {
+  contractHightOrLow,
+  callGetDataWeb3,
+  postBaseSendTxs,
+} from "src/controller/Web3";
+import PriceInput from "src/components/PriceInput";
 import ReduxServices from "src/common/redux";
 import Observer from "src/common/observer";
 import { OBSERVER_KEY } from "src/common/constants";
 
+const { RangePicker } = DatePicker
+
 const Account = () => {
   const [feePercent, setFeePercent] = useState(0);
-  const [feePercentInput, setFeePercentInput] = useState('');
+  const [feePercentInput, setFeePercentInput] = useState("");
   const [isErrorFee, setIsErrorFee] = useState(true);
-  const [errorMessageFee, setErrorMessageFee] = useState('');
+  const [errorMessageFee, setErrorMessageFee] = useState("");
 
-  const [feePercentSubInput, setFeePercentSubInput] = useState('');
+  const [feePercentSubInput, setFeePercentSubInput] = useState("");
   const [isErrorFeeSub, setIsErrorFeeSub] = useState(true);
-  const [errorMessageFeeSub, setErrorMessageFeeSub] = useState('');
+  const [errorMessageFeeSub, setErrorMessageFeeSub] = useState("");
 
-  const [takeFeeSubInput, setTakeFeeSubInput] = useState('');
+  const [takeFeeSubInput, setTakeFeeSubInput] = useState("");
   const [isErrorTakeFeeSubInput, setIsErrorTakeFeeSubInput] = useState(true);
-  const [errorMessageTakeFeeSubInput, setErrorMessageTakeFeeSubInput] = useState('');
+  const [errorMessageTakeFeeSubInput, setErrorMessageTakeFeeSubInput] =
+    useState("");
 
   const [commAddressList, setCommAddressList] = useState([]);
+  const [maintenanceList, setMaintenanceList] = useState([{
+    id: 1,
+    message: 'Thích thì đóng thui',
+    startTime: '10/10/2000',
+    endTime: '11/11/2000',
+    status: 1
+  }]);
 
-  const [collapsed, setCollapsed] = React.useState(true)
-  const [collapsedAddressList, setCollapsedAddressList] = React.useState(true)
-  const [isLoading, setLoading] = useState(false)
-  const [isLoadingComm, setLoadingComm] = useState(false)
+  const [collapsed, setCollapsed] = React.useState(true);
+  const [collapsedAddressList, setCollapsedAddressList] = React.useState(true);
+  const [collapsedMaintenanceList, setCollapsedMaintenanceList] = React.useState(true);
+  const [isLoading, setLoading] = useState(false);
+  const [isLoadingComm, setLoadingComm] = useState(false);
 
-  const userData = useSelector(state => state.userData)
+  const userData = useSelector((state) => state.userData);
 
   const columns = [
     {
-      title: 'Taker Address',
-      dataIndex: 'takerAddress',
-      key: 'takerAddress',
-      render: (address) => (<CLink href={detectAddress(address)} target="_blank">
-        {convertAddressArrToString([address], 8, 8)}
-      </CLink>),
+      title: "Taker Address",
+      dataIndex: "takerAddress",
+      key: "takerAddress",
+      render: (address) => (
+        <CLink href={detectAddress(address)} target="_blank">
+          {convertAddressArrToString([address], 8, 8)}
+        </CLink>
+      ),
     },
     {
-      title: 'Percent',
-      dataIndex: 'percent',
-      key: 'percent',
-      align: 'center'
+      title: "Percent",
+      dataIndex: "percent",
+      key: "percent",
+      align: "center",
     },
     {
-      title: <span className="deleteButton" onClick={() => setCommAddressList([])}><DeleteOutlined /></span>,
-      dataIndex: 'deleteAddress',
-      key: 'deleteAddress',
+      title: (
+        <span className="deleteButton" onClick={() => setCommAddressList([])}>
+          <DeleteOutlined />
+        </span>
+      ),
+      dataIndex: "deleteAddress",
+      key: "deleteAddress",
+      align: "center",
+      render: (address) => (
+        <span
+          className="deleteButton"
+          onClick={() => deleleFromCommList(address)}
+        >
+          <DeleteOutlined />
+        </span>
+      ),
+    },
+  ];
+
+  const columnsMaintenanceList = [
+    {
+      title: "Message",
+      dataIndex: "message",
+      key: "message",
+    },
+    {
+      title: "Start Time",
+      dataIndex: "startTime",
+      key: "startTime",
+    },
+    {
+      title: "End Time",
+      dataIndex: "endTime",
+      key: "endTime",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
       align: 'center',
-      render: (address) => (<span className="deleteButton" onClick={() => deleleFromCommList(address)}><DeleteOutlined /></span>)
-    }
+      render: (status) => (
+        <span
+          className="deleteButton"
+        >
+          {status === 1 ? <LikeOutlined style={{color: 'green'}} /> : <DislikeOutlined style={{color: 'red'}} /> }
+        </span>
+      ),
+    },
+    {
+      title: "Delete",
+      dataIndex: "delete",
+      key: "id",
+      align: 'center',
+      render: (id) => (
+        <span
+          className="deleteButton"
+        >
+          <DeleteOutlined />
+        </span>
+      ),
+    },
   ];
 
   useEffect(() => {
     contractHightOrLow().methods.feePercent().call().then(setFeePercent);
     // eslint-disable-next-line
-    getCommData()
-  }, [])
+    getCommData();
+  }, []);
 
-  const getCommData = async() => {
-    let commAddressList = await contractHightOrLow().methods.getShareCommAddress().call();
-    let commListTemp = []
-    let result = []
+  const getCommData = async () => {
+    let commAddressList = await contractHightOrLow()
+      .methods.getShareCommAddress()
+      .call();
+    let commListTemp = [];
+    let result = [];
 
-    if (commAddressList != null && commAddressList.length && commAddressList.length > 0) {
+    if (
+      commAddressList != null &&
+      commAddressList.length &&
+      commAddressList.length > 0
+    ) {
       commListTemp = commAddressList.map(async (address, index) => {
-        let percent = await contractHightOrLow().methods.commAddress(address).call();
-        return { address, percent }
-      })
+        let percent = await contractHightOrLow()
+          .methods.commAddress(address)
+          .call();
+        return { address, percent };
+      });
     }
 
-    if (commListTemp != null && commListTemp.length && commListTemp.length > 0) {
-      result = await Promise.all(commListTemp)
+    if (
+      commListTemp != null &&
+      commListTemp.length &&
+      commListTemp.length > 0
+    ) {
+      result = await Promise.all(commListTemp);
     }
-    setCommAddressList(result)
-  }
+    setCommAddressList(result);
+  };
 
   const handleSignIn = () => {
     Observer.emit(OBSERVER_KEY.SIGN_IN);
   };
 
   const onChangeFee = (value, isReset = false) => {
-    setFeePercentInput(value.number)
-    if (value.number !== '') {
-      let isError = false
-      let newValue = Number(value.number)
+    setFeePercentInput(value.number);
+    if (value.number !== "") {
+      let isError = false;
+      let newValue = Number(value.number);
       if (newValue <= 0) {
-        isError = true
-        setErrorMessageFee(`The minimum should be greater than 0`)
+        isError = true;
+        setErrorMessageFee(`The minimum should be greater than 0`);
       } else if (newValue >= 100) {
-        isError = true
-        setErrorMessageFee(`The maximum should be less than 100`)
+        isError = true;
+        setErrorMessageFee(`The maximum should be less than 100`);
       }
-      setIsErrorFee(isError)
+      setIsErrorFee(isError);
     } else {
       if (!isReset) {
-        setIsErrorFee(true)
-        setErrorMessageFee('_feePercent cannot be empty')
+        setIsErrorFee(true);
+        setErrorMessageFee("_feePercent cannot be empty");
       }
     }
-  }
+  };
 
   const onChangeFeeSub = (value, isReset = false) => {
-    setFeePercentSubInput(value.number)
-    if (value.number !== '') {
-      let isError = false
-      let newValue = Number(value.number)
+    setFeePercentSubInput(value.number);
+    if (value.number !== "") {
+      let isError = false;
+      let newValue = Number(value.number);
       if (newValue <= 0) {
-        isError = true
-        setErrorMessageFeeSub(`The minimum should be greater than 0`)
+        isError = true;
+        setErrorMessageFeeSub(`The minimum should be greater than 0`);
       } else if (newValue > 100) {
-        isError = true
-        setErrorMessageFeeSub(`The maximum should be less or equal than 100`)
+        isError = true;
+        setErrorMessageFeeSub(`The maximum should be less or equal than 100`);
       }
-      setIsErrorFeeSub(isError)
+      setIsErrorFeeSub(isError);
     } else {
       if (!isReset) {
-        setIsErrorFeeSub(true)
-        setErrorMessageFeeSub('_feePercent cannot be empty')
+        setIsErrorFeeSub(true);
+        setErrorMessageFeeSub("_feePercent cannot be empty");
       }
     }
-  }
+  };
 
   const onChangeTakeFeeSub = (e) => {
-    let value = e.target.value.toString()
-    setTakeFeeSubInput(value)
-    if (value !== '') {
+    let value = e.target.value.toString();
+    setTakeFeeSubInput(value);
+    if (value !== "") {
       let isError = false;
       if (!validateAddress(value)) {
-        isError = true
-        setErrorMessageTakeFeeSubInput(`Invalid Address`)
+        isError = true;
+        setErrorMessageTakeFeeSubInput(`Invalid Address`);
       }
-      setIsErrorTakeFeeSubInput(isError)
+      setIsErrorTakeFeeSubInput(isError);
     } else {
-      setIsErrorTakeFeeSubInput(true)
-      setErrorMessageTakeFeeSubInput('_takeFee cannot be empty')
+      setIsErrorTakeFeeSubInput(true);
+      setErrorMessageTakeFeeSubInput("_takeFee cannot be empty");
     }
-  }
+  };
 
   const setFee = async (
     fromAddress,
@@ -167,9 +258,9 @@ const Account = () => {
     callbackRejected
   ) => {
     return new Promise(async (resolve, reject) => {
-      const contractAddresses = process.env.REACT_APP_CONTRACT
-      const contract = contractHightOrLow()
-      const dataTx = callGetDataWeb3(contract, 'setFee', [feePercent])
+      const contractAddresses = process.env.REACT_APP_CONTRACT;
+      const contract = contractHightOrLow();
+      const dataTx = callGetDataWeb3(contract, "setFee", [feePercent]);
       const setFeeData = {
         from: userData.address,
         to: contractAddresses,
@@ -177,66 +268,54 @@ const Account = () => {
         callBeforeFunc: callbackBeforeDone,
         callbackFunc: callbackAfterDone,
         isCallBackErr: true,
-        callbackErrFunc: callbackRejected
-      }
+        callbackErrFunc: callbackRejected,
+      };
       postBaseSendTxs(fromAddress, [setFeeData], true)
         .then((res) => {
-          resolve(res[0])
+          resolve(res[0]);
         })
         .catch((err) => {
-          callbackRejected(err)
-          reject(err)
-        })
-    })
-  }
+          callbackRejected(err);
+          reject(err);
+        });
+    });
+  };
 
   const handleSetFee = () => {
-    const isSigned = ReduxServices.checkIsSigned()
+    const isSigned = ReduxServices.checkIsSigned();
     if (isSigned) {
-      setLoading(true)
+      setLoading(true);
       const callbackBeforeDone = () => {
-        showNotification(
-          `Setting Fee`,
-          'Waiting for transaction signature...'
-        )
-      }
+        showNotification(`Setting Fee`, "Waiting for transaction signature...");
+      };
       const callbackAfterDone = async (res) => {
-        destroyNotification()
-        showNotification(
-          `Setting Fee`,
-          'Successfully'
-        )
+        destroyNotification();
+        showNotification(`Setting Fee`, "Successfully");
         contractHightOrLow().methods.feePercent().call().then(setFeePercent);
-        onChangeFee({ number: '' }, true);
-        setLoading(false)
-      }
+        onChangeFee({ number: "" }, true);
+        setLoading(false);
+      };
       const callbackRejected = (err) => {
-        destroyNotification()
+        destroyNotification();
         if (isUserDeniedTransaction(err)) {
-          showNotification(
-            `Setting Fee`,
-            'Transaction denied'
-          )
-          setLoading(false)
+          showNotification(`Setting Fee`, "Transaction denied");
+          setLoading(false);
         } else {
-          showNotification(
-            `Setting Fee`,
-            'Transaction failed'
-          )
-          setLoading(false)
+          showNotification(`Setting Fee`, "Transaction failed");
+          setLoading(false);
         }
-      }
+      };
       setFee(
         userData.address,
         feePercentInput,
         callbackBeforeDone,
         callbackAfterDone,
         callbackRejected
-      )
+      );
     } else {
-      handleSignIn()
+      handleSignIn();
     }
-  }
+  };
 
   const convertRawToTableData = (rawList) => {
     return rawList.map((ele, index) => {
@@ -244,46 +323,55 @@ const Account = () => {
         key: index + 1,
         takerAddress: ele.address,
         percent: ele.percent,
-        deleteAddress: ele.address
-      }
-    })
-  }
+        deleteAddress: ele.address,
+      };
+    });
+  };
 
   const addToCommAddressList = () => {
-    if (commAddressList.some(ele => ele.address === takeFeeSubInput)) {
+    if (commAddressList.some((ele) => ele.address === takeFeeSubInput)) {
       showNotification(
         `Add Error`,
-        'The Address has existed in Taker List',
+        "The Address has existed in Taker List",
         null,
-        'error'
-      )
-      return
+        "error"
+      );
+      return;
     }
     if (getRemainingPercent(commAddressList) < feePercentSubInput) {
       showNotification(
         `Add Error`,
-        'Remaining Percent is not enough',
+        "Remaining Percent is not enough",
         null,
-        'error'
-      )
-      return
+        "error"
+      );
+      return;
     }
-    let tempArr = [...commAddressList, { address: takeFeeSubInput, percent: feePercentSubInput }]
+    let tempArr = [
+      ...commAddressList,
+      { address: takeFeeSubInput, percent: feePercentSubInput },
+    ];
     setCommAddressList(tempArr);
-    onChangeFeeSub({ number: '' }, true);
-    setTakeFeeSubInput('');
-  }
+    onChangeFeeSub({ number: "" }, true);
+    setTakeFeeSubInput("");
+  };
 
   const getRemainingPercent = (commList) => {
-    return 100 - commList.reduce((totalPercent, ele) => totalPercent + (Number(ele.percent) || 0), 0)
-  }
+    return (
+      100 -
+      commList.reduce(
+        (totalPercent, ele) => totalPercent + (Number(ele.percent) || 0),
+        0
+      )
+    );
+  };
 
   const deleleFromCommList = (address) => {
     let tempCommList = commAddressList.filter((ele) => {
       return ele.address !== address;
     });
-    setCommAddressList(tempCommList)
-  }
+    setCommAddressList(tempCommList);
+  };
 
   const setShareCommAddress = async (
     fromAddress,
@@ -294,9 +382,12 @@ const Account = () => {
     callbackRejected
   ) => {
     return new Promise(async (resolve, reject) => {
-      const contractAddresses = process.env.REACT_APP_CONTRACT
-      const contract = contractHightOrLow()
-      const dataTx = callGetDataWeb3(contract, 'setShareCommAddress', [setShareCommAddress,percent])
+      const contractAddresses = process.env.REACT_APP_CONTRACT;
+      const contract = contractHightOrLow();
+      const dataTx = callGetDataWeb3(contract, "setShareCommAddress", [
+        setShareCommAddress,
+        percent,
+      ]);
       const setFeeData = {
         from: userData.address,
         to: contractAddresses,
@@ -304,29 +395,29 @@ const Account = () => {
         callBeforeFunc: callbackBeforeDone,
         callbackFunc: callbackAfterDone,
         isCallBackErr: true,
-        callbackErrFunc: callbackRejected
-      }
+        callbackErrFunc: callbackRejected,
+      };
       postBaseSendTxs(fromAddress, [setFeeData], true)
         .then((res) => {
-          resolve(res[0])
+          resolve(res[0]);
         })
         .catch((err) => {
-          callbackRejected(err)
-          reject(err)
-        })
-    })
-  }
+          callbackRejected(err);
+          reject(err);
+        });
+    });
+  };
 
-  const handleSetShareCommAddress= async() => {
+  const handleSetShareCommAddress = async () => {
     let ownerAddress = await contractHightOrLow().methods.owner().call();
-    if(userData.address !== ownerAddress.toLowerCase()){
+    if (userData.address !== ownerAddress.toLowerCase()) {
       showNotification(
         `Set Share Error`,
-        'Please, connect to the owner address',
+        "Please, connect to the owner address",
         null,
-        'error'
-      )
-      return
+        "error"
+      );
+      return;
     }
 
     // eslint-disable-next-line
@@ -339,41 +430,32 @@ const Account = () => {
     //   )
     //   return
     // }
-    const isSigned = ReduxServices.checkIsSigned()
+    const isSigned = ReduxServices.checkIsSigned();
     if (isSigned) {
-      setLoadingComm(true)
-      let addressArr = commAddressList.map(ele=> ele.address)
-      let percentArr = commAddressList.map(ele=> ele.percent)
+      setLoadingComm(true);
+      let addressArr = commAddressList.map((ele) => ele.address);
+      let percentArr = commAddressList.map((ele) => ele.percent);
       const callbackBeforeDone = () => {
         showNotification(
           `Setting Share`,
-          'Waiting for transaction signature...'
-        )
-      }
+          "Waiting for transaction signature..."
+        );
+      };
       const callbackAfterDone = async (res) => {
-        destroyNotification()
-        showNotification(
-          `Setting Share`,
-          'Successfully'
-        )
-        setLoadingComm(false)
-      }
+        destroyNotification();
+        showNotification(`Setting Share`, "Successfully");
+        setLoadingComm(false);
+      };
       const callbackRejected = (err) => {
-        destroyNotification()
+        destroyNotification();
         if (isUserDeniedTransaction(err)) {
-          showNotification(
-            `Setting Share`,
-            'Transaction denied'
-          )
-          setLoadingComm(false)
+          showNotification(`Setting Share`, "Transaction denied");
+          setLoadingComm(false);
         } else {
-          showNotification(
-            `Setting Share`,
-            'Transaction failed'
-          )
-          setLoadingComm(false)
+          showNotification(`Setting Share`, "Transaction failed");
+          setLoadingComm(false);
         }
-      }
+      };
       setShareCommAddress(
         userData.address,
         addressArr,
@@ -381,12 +463,11 @@ const Account = () => {
         callbackBeforeDone,
         callbackAfterDone,
         callbackRejected
-      )
+      );
     } else {
-      handleSignIn()
+      handleSignIn();
     }
-  }
-
+  };
 
   return (
     <CRow>
@@ -395,12 +476,21 @@ const Account = () => {
         <CCard>
           <CCardHeader>
             <b>Binary Option Contract: </b>
-            {<CLink href={detectAddress(process.env.REACT_APP_CONTRACT)} target="_blank">
-              {convertAddressArrToString([process.env.REACT_APP_CONTRACT], 8, 8)}
-            </CLink>}
+            {
+              <CLink
+                href={detectAddress(process.env.REACT_APP_CONTRACT)}
+                target="_blank"
+              >
+                {convertAddressArrToString(
+                  [process.env.REACT_APP_CONTRACT],
+                  8,
+                  8
+                )}
+              </CLink>
+            }
           </CCardHeader>
           <CCardBody>
-            <CForm >
+            <CForm>
               <CCol xs="12" sm="12">
                 <CFade>
                   <CCard>
@@ -411,8 +501,17 @@ const Account = () => {
                         </CCol>
                         <CCol xs="1" sm="2">
                           <div className="card-header-actions">
-                            <CLink className="card-header-action" onClick={() => setCollapsed(!collapsed)}>
-                              <CIcon name={collapsed ? 'cil-chevron-bottom' : 'cil-chevron-top'} />
+                            <CLink
+                              className="card-header-action"
+                              onClick={() => setCollapsed(!collapsed)}
+                            >
+                              <CIcon
+                                name={
+                                  collapsed
+                                    ? "cil-chevron-bottom"
+                                    : "cil-chevron-top"
+                                }
+                              />
                             </CLink>
                           </div>
                         </CCol>
@@ -421,13 +520,18 @@ const Account = () => {
                     <CCollapse show={collapsed}>
                       <CCardBody>
                         <CFormGroup>
-                          <CLabel htmlFor="liquidation-ratio"> _feePercent (uint256) </CLabel>
+                          <CLabel htmlFor="liquidation-ratio">
+                            _feePercent (uint256){" "}
+                          </CLabel>
                           <CInputGroup>
                             <PriceInput
-                              placeholder='_feePercent (uint256)'
-                              suffix='%'
+                              placeholder="_feePercent (uint256)"
+                              suffix="%"
                               value={{
-                                number: feePercentInput == null ? "" : feePercentInput
+                                number:
+                                  feePercentInput == null
+                                    ? ""
+                                    : feePercentInput,
                               }}
                               maxDecimals={8}
                               onChange={onChangeFee}
@@ -439,22 +543,113 @@ const Account = () => {
                         </CFormGroup>
 
                         <Button
-                          type='primary'
+                          type="primary"
                           className="mt-3"
                           style={{ width: "100%" }}
                           onClick={() => handleSetFee()}
                           loading={isLoading}
-                          disabled={ isErrorFee || isLoading}
+                          disabled={isErrorFee || isLoading}
                         >
                           Set Fee
                         </Button>
-
                       </CCardBody>
                     </CCollapse>
                   </CCard>
                 </CFade>
               </CCol>
+            </CForm>
+          </CCardBody>
+        </CCard>
+        {/* ---------------- */}
+        <CCard>
+          <CCardHeader>
+            <b>Settings maintenance: </b>
+          </CCardHeader>
+          <CCardBody>
+            <CForm>
+              <CCol xs="12" sm="12">
+                <CFade>
+                  {/* List Maintenance */}
+                  <CCard>
+                    <CCardHeader>
+                      <CRow>
+                        <CCol xs="11" sm="10">
+                          <b>List maintenance:</b>
+                        </CCol>
+                        <CCol xs="1" sm="2">
+                          <div className="card-header-actions">
+                            <CLink
+                              className="card-header-action"
+                              onClick={() =>
+                                setCollapsedMaintenanceList(!collapsedMaintenanceList)
+                              }
+                            >
+                              <CIcon
+                                name={
+                                  collapsedMaintenanceList
+                                    ? "cil-chevron-bottom"
+                                    : "cil-chevron-top"
+                                }
+                              />
+                            </CLink>
+                          </div>
+                        </CCol>
+                      </CRow>
+                    </CCardHeader>
 
+                    <CCollapse show={collapsedMaintenanceList}>
+                      <CCardBody>
+                        <Table
+                          dataSource={maintenanceList}
+                          columns={columnsMaintenanceList}
+                          pagination={false}
+                        />
+                      </CCardBody>
+                    </CCollapse>
+                  </CCard>
+
+                  {/* Add Form Card */}
+                  <CCard>
+                    <CCardBody>
+                      <CFormGroup>
+                        <CLabel>Message:</CLabel>
+                        <CInputGroup>
+                          <CInput placeholder="Message" />
+                        </CInputGroup>
+                      </CFormGroup>
+
+                      <CFormGroup style={{ marginTop: "1.5rem" }}>
+          
+                            <CLabel>
+                              Start Time ~ End Time
+                            </CLabel>
+                            <CInputGroup>
+                            <RangePicker style={{ width: "100%" }} showTime />
+                            </CInputGroup>
+                          
+                      </CFormGroup>
+
+                      <CFormGroup>
+                        <CLabel >Status:</CLabel>
+                        <CInputGroup>
+                          <Radio.Group defaultValue={1}>
+                            <Radio value={1}>Suspense</Radio>
+                            <Radio value={2}>Active</Radio>
+                          </Radio.Group>
+                        </CInputGroup>
+                      </CFormGroup>
+
+                      <Button
+                        type="primary"
+                        className="mt-2"
+                        style={{ width: "100%" }}
+                      >
+                        Save
+                      </Button>
+                    </CCardBody>
+                  </CCard>
+                </CFade>
+              </CCol>
             </CForm>
           </CCardBody>
         </CCard>
@@ -462,14 +657,12 @@ const Account = () => {
       {/* --------------------------------- Right form -------------------------------------------*/}
       <CCol xs="6" sm="6">
         <CCard>
-
           <CCardBody>
-            <CForm >
+            <CForm>
               <CCol xs="12" sm="12">
                 <CFade>
                   {/* List Taker Card */}
                   <CCard>
-
                     <CCardHeader>
                       <CRow>
                         <CCol xs="11" sm="10">
@@ -477,8 +670,19 @@ const Account = () => {
                         </CCol>
                         <CCol xs="1" sm="2">
                           <div className="card-header-actions">
-                            <CLink className="card-header-action" onClick={() => setCollapsedAddressList(!collapsedAddressList)}>
-                              <CIcon name={collapsedAddressList ? 'cil-chevron-bottom' : 'cil-chevron-top'} />
+                            <CLink
+                              className="card-header-action"
+                              onClick={() =>
+                                setCollapsedAddressList(!collapsedAddressList)
+                              }
+                            >
+                              <CIcon
+                                name={
+                                  collapsedAddressList
+                                    ? "cil-chevron-bottom"
+                                    : "cil-chevron-top"
+                                }
+                              />
                             </CLink>
                           </div>
                         </CCol>
@@ -487,7 +691,11 @@ const Account = () => {
 
                     <CCollapse show={collapsedAddressList}>
                       <CCardBody>
-                        <Table dataSource={convertRawToTableData(commAddressList)} columns={columns} pagination={false} />
+                        <Table
+                          dataSource={convertRawToTableData(commAddressList)}
+                          columns={columns}
+                          pagination={false}
+                        />
                       </CCardBody>
                     </CCollapse>
                     {/* <CCardFooter style={{ textAlign: "right" }} >
@@ -499,13 +707,19 @@ const Account = () => {
                   <CCard>
                     <CCardBody>
                       <CFormGroup>
-                        <CLabel htmlFor="liquidation-ratio"> _feePercent (uint256) </CLabel>
+                        <CLabel htmlFor="liquidation-ratio">
+                          {" "}
+                          _feePercent (uint256){" "}
+                        </CLabel>
                         <CInputGroup>
                           <PriceInput
-                            placeholder='_feePercent (uint256)'
-                            suffix='%'
+                            placeholder="_feePercent (uint256)"
+                            suffix="%"
                             value={{
-                              number: feePercentSubInput == null ? "" : feePercentSubInput
+                              number:
+                                feePercentSubInput == null
+                                  ? ""
+                                  : feePercentSubInput,
                             }}
                             maxDecimals={8}
                             onChange={onChangeFeeSub}
@@ -516,49 +730,72 @@ const Account = () => {
                         </CInputGroup>
                       </CFormGroup>
 
-                      <CFormGroup style={{ marginTop: '1.5rem' }}>
-                        <CLabel htmlFor="liquidation-ratio"> _takeFee (address) </CLabel>
+                      <CFormGroup style={{ marginTop: "1.5rem" }}>
+                        <CLabel htmlFor="liquidation-ratio">
+                          {" "}
+                          _takeFee (address){" "}
+                        </CLabel>
                         <CInputGroup>
-                          <CInput type="text" placeholder="_takeFee (address)" onChange={onChangeTakeFeeSub} value={takeFeeSubInput} style={{ color: "black" }} />
-                          {isErrorTakeFeeSubInput && <span className='address-input-error'>{errorMessageTakeFeeSubInput}</span>}
+                          <CInput
+                            type="text"
+                            placeholder="_takeFee (address)"
+                            onChange={onChangeTakeFeeSub}
+                            value={takeFeeSubInput}
+                            style={{ color: "black" }}
+                          />
+                          {isErrorTakeFeeSubInput && (
+                            <span className="address-input-error">
+                              {errorMessageTakeFeeSubInput}
+                            </span>
+                          )}
                         </CInputGroup>
                       </CFormGroup>
 
-                      <CFormGroup style={{ marginTop: '1.5rem' }}>
+                      <CFormGroup style={{ marginTop: "1.5rem" }}>
                         <CRow>
                           <CCol xs="9" sm="9" style={{ textAlign: "left" }}>
-                            <span className="font-weight-bold">{`Remaining Percent: ${getRemainingPercent(commAddressList)}%`}</span>
+                            <span className="font-weight-bold">{`Remaining Percent: ${getRemainingPercent(
+                              commAddressList
+                            )}%`}</span>
                           </CCol>
                           <CCol xs="3" sm="3" style={{ textAlign: "right" }}>
-                            <Button type="primary" shape="circle" icon={<PlusOutlined />} size="small" className="addItemButton"
-                              disabled={isErrorTakeFeeSubInput || isErrorFeeSub} onClick={() => addToCommAddressList()}
+                            <Button
+                              type="primary"
+                              shape="circle"
+                              icon={<PlusOutlined />}
+                              size="small"
+                              className="addItemButton"
+                              disabled={isErrorTakeFeeSubInput || isErrorFeeSub}
+                              onClick={() => addToCommAddressList()}
                             />
                           </CCol>
                         </CRow>
                       </CFormGroup>
 
                       <Button
-                        type='primary'
+                        type="primary"
                         className="mt-2"
                         style={{ width: "100%" }}
                         loading={isLoadingComm}
-                        disabled={ commAddressList.length === 0 || isLoadingComm || getRemainingPercent(commAddressList) != 0}
+                        disabled={
+                          commAddressList.length === 0 ||
+                          isLoadingComm ||
+                          getRemainingPercent(commAddressList) != 0
+                        }
                         onClick={handleSetShareCommAddress}
                       >
                         Save
                       </Button>
-
                     </CCardBody>
                   </CCard>
                 </CFade>
               </CCol>
-
             </CForm>
           </CCardBody>
         </CCard>
       </CCol>
     </CRow>
-  )
-}
+  );
+};
 
-export default Account
+export default Account;
