@@ -7,7 +7,10 @@ import {
   CCol,
   CDataTable,
   CRow,
-    CLink
+    CLink,
+    CFormGroup,
+    CInputGroup,
+    CButton
 } from '@coreui/react'
 import moment from 'moment'
 import numeral from 'numeral'
@@ -18,6 +21,9 @@ import {
     detectTransaction
 } from 'src/common/function';
 import Spinner from 'src/views/base/spinner';
+import { DatePicker } from "antd";
+
+const { RangePicker } = DatePicker;
 
 const getBadge = status => {
     switch (status) {
@@ -33,9 +39,18 @@ const View = () => {
   const [loading, setLoading] = useState(false);
   const [bets, setBets] = useState([]);
 
+  const currentDate = new Date();
+  const [fromDate, setFromDate] = useState(
+    new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+  );
+  const [toDate, setToDate] = useState(currentDate);
+
     const run = async () => {
         setLoading(true)
-        const res = await HTTP.fetchData('/bets', 'GET', {sort: 'desc', limit: 10000000000}, null);
+        const res = await HTTP.fetchData('/bets', 'GET', {sort: 'desc', 
+        fromDate: moment(fromDate).format("YYYY-MM-DD"),
+        toDate: moment(toDate).format("YYYY-MM-DD"),
+        limit: 10000000000}, null);
         setBets(res.data)
         // setTotalPage(res.totalPage)
         setLoading(false)
@@ -43,6 +58,13 @@ const View = () => {
     useEffect(() => {
         run()
     }, [])
+
+    const handleChangeSearchTime = (e) => {
+      if (e !== null) {
+        setFromDate(e[0]._d);
+        setToDate(e[1]._d);
+      }
+    };
   return (
       loading
           ? <Spinner />
@@ -51,7 +73,37 @@ const View = () => {
         <CCol xs="12" lg="12">
           <CCard>
             <CCardHeader>
-              Bets
+            <div style={{ display: "flex", alignItems: "baseline" }}>
+              <span
+                style={{
+                  borderRight: "2px solid #c9c9c9",
+                  paddingRight: "10px",
+                }}
+              >
+                Bets
+              </span>
+
+              <CFormGroup style={{ marginLeft: "10px", display: "flex" }}>
+                <CInputGroup>
+                  <RangePicker
+                    defaultValue={[moment(fromDate), moment(toDate)]}
+                    onChange={handleChangeSearchTime}
+                    style={{ width: "100%" }}
+                  />
+                </CInputGroup>
+
+                <CButton
+                  color="secondary"
+                  style={{
+                    marginLeft: "10px",
+                    minWidth: "100px",
+                  }}
+                  onClick={() => run()}
+                >
+                  Search
+                </CButton>
+              </CFormGroup>
+            </div>
             </CCardHeader>
             <CCardBody>
               <CDataTable
