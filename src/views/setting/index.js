@@ -18,7 +18,12 @@ import {
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { Button, DatePicker, Radio, Table } from "antd";
-import { PlusOutlined, DeleteOutlined, LikeOutlined, DislikeOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  CheckOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import {
   detectAddress,
   convertAddressArrToString,
@@ -36,8 +41,10 @@ import PriceInput from "src/components/PriceInput";
 import ReduxServices from "src/common/redux";
 import Observer from "src/common/observer";
 import { OBSERVER_KEY } from "src/common/constants";
+import moment from "moment";
+import HTTP from "src/controller/API/HTTP";
 
-const { RangePicker } = DatePicker
+const { RangePicker } = DatePicker;
 
 const Account = () => {
   const [feePercent, setFeePercent] = useState(0);
@@ -55,17 +62,31 @@ const Account = () => {
     useState("");
 
   const [commAddressList, setCommAddressList] = useState([]);
-  const [maintenanceList, setMaintenanceList] = useState([{
-    id: 1,
-    message: 'Thích thì đóng thui',
-    startTime: '10/10/2000',
-    endTime: '11/11/2000',
-    status: 1
-  }]);
+  const [maintenanceList, setMaintenanceList] = useState([
+    {
+      id: 1,
+      message: "Thích thì đóng thui",
+      startTime: "10/10/2000",
+      endTime: "11/11/2000",
+      status: "active",
+    },
+  ]);
+
+  const [message, setMessage] = useState("");
+  const [isErrorMessage, setIsErrorMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [isErrorTime, setIsErrorTime] = useState(false);
+  const [errorMessageTime, setErrorMessageTime] = useState("");
+
+  const [status, setStatus] = useState("suspense");
 
   const [collapsed, setCollapsed] = React.useState(true);
   const [collapsedAddressList, setCollapsedAddressList] = React.useState(true);
-  const [collapsedMaintenanceList, setCollapsedMaintenanceList] = React.useState(true);
+  const [collapsedMaintenanceList, setCollapsedMaintenanceList] =
+    React.useState(true);
   const [isLoading, setLoading] = useState(false);
   const [isLoadingComm, setLoadingComm] = useState(false);
 
@@ -128,26 +149,9 @@ const Account = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      align: 'center',
+      align: "center",
       render: (status) => (
-        <span
-          className="deleteButton"
-        >
-          {status === 1 ? <LikeOutlined style={{color: 'green'}} /> : <DislikeOutlined style={{color: 'red'}} /> }
-        </span>
-      ),
-    },
-    {
-      title: "Delete",
-      dataIndex: "delete",
-      key: "id",
-      align: 'center',
-      render: (id) => (
-        <span
-          className="deleteButton"
-        >
-          <DeleteOutlined />
-        </span>
+        <span style={{ textTransform: "capitalize" }}>{status}</span>
       ),
     },
   ];
@@ -469,6 +473,56 @@ const Account = () => {
     }
   };
 
+  const onChangeMessage = (value) => {
+    setMessage(value);
+    if (value.trim() === "") {
+      setIsErrorMessage(true);
+      setErrorMessage("Message is required");
+    } else {
+      setIsErrorMessage(false);
+      setErrorMessage("");
+    }
+  };
+
+  const disabledDate = (current) => {
+    return current && current < moment().startOf("day");
+  };
+
+  const handleChangeTime = (e) => {
+    if (e !== null) {
+      setIsErrorTime(false);
+      setErrorMessageTime("");
+      setStartTime(e[0]._d);
+      setEndTime(e[1]._d);
+    } else {
+      setIsErrorTime(true);
+      setErrorMessageTime("Start time / End time is required");
+    }
+  };
+
+  const handleSettingMaintenance = async () => {
+    if (message.trim() === "" || startTime === null || endTime === null) {
+      showNotification(
+        `Setting maintenance`,
+        "Setting maintenance cannot be blank!"
+      );
+    } else {
+      // setLoadingSettingMaintenance(true)
+      HTTP.fetchData(`/config/maintenance`, `POST`, null, {
+        data: {
+          message,
+          startTime: moment(startTime).format("YYYY-MM-DD HH:mm:ss"),
+          endTime: moment(endTime).format("YYYY-MM-DD HH:mm:ss"),
+          status,
+        },
+      }).then((res)=>{
+        
+      }).catch((err)=>{
+        
+      })
+    }
+  };
+
   return (
     <CRow>
       {/* --------------------------------- Left form -------------------------------------------*/}
@@ -563,7 +617,7 @@ const Account = () => {
         {/* ---------------- */}
         <CCard>
           <CCardHeader>
-            <b>Settings maintenance: </b>
+            <b>Setting maintenance: </b>
           </CCardHeader>
           <CCardBody>
             <CForm>
@@ -581,7 +635,9 @@ const Account = () => {
                             <CLink
                               className="card-header-action"
                               onClick={() =>
-                                setCollapsedMaintenanceList(!collapsedMaintenanceList)
+                                setCollapsedMaintenanceList(
+                                  !collapsedMaintenanceList
+                                )
                               }
                             >
                               <CIcon
@@ -614,32 +670,50 @@ const Account = () => {
                       <CFormGroup>
                         <CLabel>Message:</CLabel>
                         <CInputGroup>
-                          <CInput placeholder="Message" />
+                          <CInput
+                            value={message}
+                            onChange={(e) => onChangeMessage(e.target.value)}
+                            placeholder="Message"
+                          />
+                          {isErrorMessage && (
+                            <span className="input-error">{errorMessage}</span>
+                          )}
                         </CInputGroup>
                       </CFormGroup>
 
                       <CFormGroup style={{ marginTop: "1.5rem" }}>
-          
-                            <CLabel>
-                              Start Time ~ End Time
-                            </CLabel>
-                            <CInputGroup>
-                            <RangePicker style={{ width: "100%" }} showTime />
-                            </CInputGroup>
-                          
+                        <CLabel>Start Time ~ End Time</CLabel>
+                        <CInputGroup>
+                          <RangePicker
+                            disabledDate={disabledDate}
+                            placeholder={["Start Time", "End Time"]}
+                            style={{ width: "100%" }}
+                            showTime
+                            onChange={handleChangeTime}
+                          />
+                          {isErrorTime && (
+                            <span className="input-error">
+                              {errorMessageTime}
+                            </span>
+                          )}
+                        </CInputGroup>
                       </CFormGroup>
 
-                      <CFormGroup>
-                        <CLabel >Status:</CLabel>
+                      <CFormGroup style={{ marginTop: "1.5rem" }}>
+                        <CLabel>Status:</CLabel>
                         <CInputGroup>
-                          <Radio.Group defaultValue={1}>
-                            <Radio value={1}>Suspense</Radio>
-                            <Radio value={2}>Active</Radio>
+                          <Radio.Group
+                            defaultValue={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                          >
+                            <Radio value="suspense">Suspense</Radio>
+                            <Radio value="active">Active</Radio>
                           </Radio.Group>
                         </CInputGroup>
                       </CFormGroup>
 
                       <Button
+                        onClick={handleSettingMaintenance}
                         type="primary"
                         className="mt-2"
                         style={{ width: "100%" }}
