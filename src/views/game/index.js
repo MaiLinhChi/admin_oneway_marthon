@@ -61,8 +61,8 @@ const View = () => {
         "GET",
         {
           sort: "desc",
-          fromDate: fromDate.getTime(),
-          toDate: toDate.getTime(),
+          fromDate,
+          toDate,
           limit: 10000000000,
         },
         null

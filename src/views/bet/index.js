@@ -48,8 +48,8 @@ const View = () => {
         
         if(fromDate && toDate){
           res = await HTTP.fetchData('/bets', 'GET', {sort: 'desc', 
-          fromDate: fromDate.getTime(),
-          toDate: toDate.getTime(),
+          fromDate,
+          toDate,
           limit: 10000000000}, null);
         } else {
           res = await HTTP.fetchData('/bets', 'GET', {sort: 'desc', 
