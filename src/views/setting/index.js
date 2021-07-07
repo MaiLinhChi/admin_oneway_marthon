@@ -21,8 +21,6 @@ import { Button, DatePicker, Radio, Table } from "antd";
 import {
   PlusOutlined,
   DeleteOutlined,
-  CheckOutlined,
-  LoadingOutlined,
 } from "@ant-design/icons";
 import {
   detectAddress,
@@ -177,7 +175,6 @@ const Account = () => {
     setMaintenanceList(res)
     setLoadingListMaintenance(false)
   }
-  console.log(maintenanceList);
   useEffect(() => {
     contractHightOrLow().methods.feePercent().call().then(setFeePercent);
     // eslint-disable-next-line
@@ -523,7 +520,7 @@ const Account = () => {
     }
   };
 
-  const clearDate = () => {
+  const clearData = () => {
     setMessage("");
     setStartTime(null);
     setEndTime(null);
@@ -550,7 +547,8 @@ const Account = () => {
       })
         .then((res) => {
           showNotification(`Setting maintenance`, "Successfully!");
-          clearDate();
+          clearData();
+          getListMaintenance()
           setLoadingSettingMaintenance(false);
         })
         .catch((err) => {
@@ -559,6 +557,13 @@ const Account = () => {
         });
     }
   };
+
+  const setSettingMaintenance = (setting) =>{
+    setMessage(setting.data.message)
+    setStartTime(setting.data.startTime)
+    setEndTime(setting.data.endTime)
+    setStatus(setting.data.status)
+  }
 
   return (
     <CRow>
@@ -697,6 +702,11 @@ const Account = () => {
                           dataSource={maintenanceList}
                           columns={columnsMaintenanceList}
                           pagination={false}
+                          onRow={(record)=>{
+                            return {
+                              onClick: () => setSettingMaintenance(record)
+                            }
+                          }}
                         />
                       </CCardBody>
                     </CCollapse>
@@ -724,7 +734,7 @@ const Account = () => {
                           <CLabel>Start Time ~ End Time</CLabel>
                           <CInputGroup>
                             <RangePicker
-                              // value={[startTime,endTime]}
+                              value={startTime && endTime ? [moment(startTime),moment(endTime)]: ''}
                               disabledDate={disabledDate}
                               placeholder={["Start Time", "End Time"]}
                               style={{ width: "100%" }}
@@ -744,7 +754,7 @@ const Account = () => {
                         <CLabel>Status:</CLabel>
                         <CInputGroup>
                           <Radio.Group
-                            defaultValue={status}
+                            value={status}
                             onChange={(e) => setStatus(e.target.value)}
                           >
                             <Radio value="suspense">Suspense</Radio>
