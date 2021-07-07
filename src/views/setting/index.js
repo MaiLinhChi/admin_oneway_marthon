@@ -89,6 +89,7 @@ const Account = () => {
     React.useState(true);
   const [isLoading, setLoading] = useState(false);
   const [isLoadingComm, setLoadingComm] = useState(false);
+  const [loadingSettingMaintenance,setLoadingSettingMaintenance] = useState(false)
 
   const userData = useSelector((state) => state.userData);
 
@@ -507,7 +508,7 @@ const Account = () => {
         "Setting maintenance cannot be blank!"
       );
     } else {
-      // setLoadingSettingMaintenance(true)
+      setLoadingSettingMaintenance(true)
       HTTP.fetchData(`/config/maintenance`, `POST`, null, {
         data: {
           message,
@@ -516,9 +517,21 @@ const Account = () => {
           status,
         },
       }).then((res)=>{
-        
+        showNotification(
+          `Setting maintenance`,
+          "Successfully!"
+        );
+        setLoadingSettingMaintenance(false)
+        setMessage("")
+        setStartTime(null)
+        setEndTime(null)
+        setStatus('suspense')
       }).catch((err)=>{
-        
+        showNotification(
+          `Setting maintenance`,
+          "Fail!"
+        );
+        setLoadingSettingMaintenance(false)
       })
     }
   };
@@ -685,6 +698,7 @@ const Account = () => {
                         <CLabel>Start Time ~ End Time</CLabel>
                         <CInputGroup>
                           <RangePicker
+                            // value={[startTime,endTime]}
                             disabledDate={disabledDate}
                             placeholder={["Start Time", "End Time"]}
                             style={{ width: "100%" }}
@@ -717,6 +731,7 @@ const Account = () => {
                         type="primary"
                         className="mt-2"
                         style={{ width: "100%" }}
+                        loading={loadingSettingMaintenance}
                       >
                         Save
                       </Button>
