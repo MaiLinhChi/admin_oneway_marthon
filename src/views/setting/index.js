@@ -60,15 +60,7 @@ const Account = () => {
     useState("");
 
   const [commAddressList, setCommAddressList] = useState([]);
-  const [maintenanceList, setMaintenanceList] = useState([
-    {
-      id: 1,
-      message: "Thích thì đóng thui",
-      startTime: "10/10/2000",
-      endTime: "11/11/2000",
-      status: "active",
-    },
-  ]);
+  const [maintenanceList, setMaintenanceList] = useState([]);
 
   const [message, setMessage] = useState("");
   const [isErrorMessage, setIsErrorMessage] = useState(false);
