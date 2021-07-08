@@ -71,7 +71,7 @@ const Account = () => {
   const [isErrorTime, setIsErrorTime] = useState(false);
   const [errorMessageTime, setErrorMessageTime] = useState("");
 
-  const [status, setStatus] = useState("suspense");
+  const [status, setStatus] = useState('suspend');
 
   const [collapsed, setCollapsed] = React.useState(true);
   const [collapsedAddressList, setCollapsedAddressList] = React.useState(true);
@@ -435,17 +435,6 @@ const Account = () => {
       );
       return;
     }
-
-    // eslint-disable-next-line
-    // if(getRemainingPercent(commAddressList) != 0){
-    //   showNotification(
-    //     `Set Share Error`,
-    //     'You must allocate 100%',
-    //     null,
-    //     'error'
-    //   )
-    //   return
-    // }
     const isSigned = ReduxServices.checkIsSigned();
     if (isSigned) {
       setLoadingComm(true);
@@ -516,7 +505,7 @@ const Account = () => {
     setMessage("");
     setStartTime(null);
     setEndTime(null);
-    setStatus("suspense");
+    setStatus("suspend");
     setMountRangeTime(false)
     setTimeout(()=>setMountRangeTime(true),0)
   };
@@ -749,7 +738,7 @@ const Account = () => {
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
                           >
-                            <Radio value="suspense">Suspense</Radio>
+                            <Radio value="suspend">Suspend</Radio>
                             <Radio value="active">Active</Radio>
                           </Radio.Group>
                         </CInputGroup>
