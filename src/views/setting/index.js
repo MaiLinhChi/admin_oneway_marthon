@@ -17,11 +17,8 @@ import {
   CCardFooter,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { Button, DatePicker, Radio, Table } from "antd";
-import {
-  PlusOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { Button, Radio, Table } from "antd";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import {
   detectAddress,
   convertAddressArrToString,
@@ -41,8 +38,7 @@ import Observer from "src/common/observer";
 import { OBSERVER_KEY } from "src/common/constants";
 import moment from "moment";
 import HTTP from "src/controller/API/HTTP";
-
-const { RangePicker } = DatePicker;
+import { TextField } from "@material-ui/core";
 
 const Account = () => {
   const [feePercent, setFeePercent] = useState(0);
@@ -68,8 +64,6 @@ const Account = () => {
 
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const [isErrorTime, setIsErrorTime] = useState(false);
-  const [errorMessageTime, setErrorMessageTime] = useState("");
 
   const [status, setStatus] = useState('suspend');
 
@@ -81,9 +75,7 @@ const Account = () => {
   const [isLoadingComm, setLoadingComm] = useState(false);
   const [loadingSettingMaintenance, setLoadingSettingMaintenance] =
     useState(false);
-  const [loadingListMaintenance,setLoadingListMaintenance] = useState(false)
-
-  const [mountRangeTime, setMountRangeTime] = useState(true);
+  const [loadingListMaintenance, setLoadingListMaintenance] = useState(false);
 
   const userData = useSelector((state) => state.userData);
 
@@ -129,49 +121,49 @@ const Account = () => {
       title: "Message",
       dataIndex: "data",
       key: "message",
-      render: data =><span>{data?.message}</span>
+      render: (data) => <span>{data?.message}</span>,
     },
     {
       title: "Start Time",
       dataIndex: "data",
       key: "startTime",
-      render: data => <span>{data?.startTime}</span>
+      render: (data) => <span>{data?.startTime}</span>,
     },
     {
       title: "End Time",
       dataIndex: "data",
       key: "endTime",
-      render: data => <span>{data?.endTime}</span>
+      render: (data) => <span>{data?.endTime}</span>,
     },
     {
       title: "Status",
       dataIndex: "data",
       key: "status",
       align: "center",
-      render: data => (
+      render: (data) => (
         <span style={{ textTransform: "capitalize" }}>{data?.status}</span>
       ),
     },
   ];
 
-  const getListMaintenance = async () =>{
-    setLoadingListMaintenance(true)
+  const getListMaintenance = async () => {
+    setLoadingListMaintenance(true);
     const res = await HTTP.fetchData(
       "/configs",
       "GET",
       {
-        key: 'maintenance'
+        key: "maintenance",
       },
       null
     );
-    setMaintenanceList(res)
-    setLoadingListMaintenance(false)
-  }
+    setMaintenanceList(res);
+    setLoadingListMaintenance(false);
+  };
   useEffect(() => {
     contractHightOrLow().methods.feePercent().call().then(setFeePercent);
     // eslint-disable-next-line
     getCommData();
-    getListMaintenance()
+    getListMaintenance();
   }, []);
 
   const getCommData = async () => {
@@ -489,25 +481,28 @@ const Account = () => {
     return current && current < moment().startOf("day");
   };
 
-  const handleChangeTime = (e) => {
-    if (e !== null) {
-      setIsErrorTime(false);
-      setErrorMessageTime("");
-      setStartTime(e[0]._d);
-      setEndTime(e[1]._d);
-    } else {
-      setIsErrorTime(true);
-      setErrorMessageTime("Start time / End time is required");
+  const onChangeStartTime = (e) => {
+    const value = new Date(e.target.value);
+    if (value > endTime) {
+      setEndTime(value);
     }
+    setStartTime(value);
+  };
+
+  const onChangeEndTime = (e) => {
+    const value = new Date(e.target.value);
+    if (value < startTime) {
+      setStartTime(value);
+    }
+    setEndTime(value);
   };
 
   const clearData = () => {
     setMessage("");
     setStartTime(null);
     setEndTime(null);
-    setStatus("suspend");
-    setMountRangeTime(false)
-    setTimeout(()=>setMountRangeTime(true),0)
+    setStatus('suspense');
+
   };
 
   const handleSettingMaintenance = async () => {
@@ -529,7 +524,7 @@ const Account = () => {
         .then((res) => {
           showNotification(`Setting maintenance`, "Successfully!");
           clearData();
-          getListMaintenance()
+          getListMaintenance();
           setLoadingSettingMaintenance(false);
         })
         .catch((err) => {
@@ -539,12 +534,12 @@ const Account = () => {
     }
   };
 
-  const setSettingMaintenance = (setting) =>{
-    setMessage(setting.data.message)
-    setStartTime(setting.data.startTime)
-    setEndTime(setting.data.endTime)
-    setStatus(setting.data.status)
-  }
+  const setSettingMaintenance = (setting) => {
+    setMessage(setting.data.message);
+    setStartTime(setting.data.startTime);
+    setEndTime(setting.data.endTime);
+    setStatus(setting.data.status);
+  };
 
   return (
     <CRow>
@@ -683,10 +678,10 @@ const Account = () => {
                           dataSource={maintenanceList}
                           columns={columnsMaintenanceList}
                           pagination={false}
-                          onRow={(record)=>{
+                          onRow={(record) => {
                             return {
-                              onClick: () => setSettingMaintenance(record)
-                            }
+                              onClick: () => setSettingMaintenance(record),
+                            };
                           }}
                         />
                       </CCardBody>
@@ -710,26 +705,44 @@ const Account = () => {
                         </CInputGroup>
                       </CFormGroup>
 
-                      {mountRangeTime && (
-                        <CFormGroup style={{ marginTop: "1.5rem" }}>
-                          <CLabel>Start Time ~ End Time</CLabel>
-                          <CInputGroup>
-                            <RangePicker
-                              value={startTime && endTime ? [moment(startTime),moment(endTime)]: ''}
-                              disabledDate={disabledDate}
-                              placeholder={["Start Time", "End Time"]}
-                              style={{ width: "100%" }}
-                              showTime
-                              onChange={handleChangeTime}
+                      <CFormGroup
+                        style={{
+                          marginTop: "1.5rem",
+                        }}
+                      >
+                        <CRow>
+                          <CCol lg={6} xs={12}>
+                            <TextField
+                              type="datetime-local"
+                              label="Start time"
+                              value={
+                                startTime
+                                  ? moment(startTime).format("YYYY-MM-DDTHH:mm")
+                                  : ""
+                              }
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              onChange={onChangeStartTime}
                             />
-                            {isErrorTime && (
-                              <span className="input-error">
-                                {errorMessageTime}
-                              </span>
-                            )}
-                          </CInputGroup>
-                        </CFormGroup>
-                      )}
+                          </CCol>
+                          <CCol lg={6} xs={12}>
+                            <TextField
+                              type="datetime-local"
+                              label="End time"
+                              value={
+                                endTime
+                                  ? moment(endTime).format("YYYY-MM-DDTHH:mm")
+                                  : ""
+                              }
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              onChange={onChangeEndTime}
+                            />
+                          </CCol>
+                        </CRow>
+                      </CFormGroup>
 
                       <CFormGroup style={{ marginTop: "1.5rem" }}>
                         <CLabel>Status:</CLabel>
