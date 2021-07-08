@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CDataTable,
-  CRow,
-  CLink,
-  CButton,
-  CFormGroup,
-  CLabel,
-  CInputGroup,
-  CInput,
+    CCard,
+    CCardBody,
+    CCardHeader,
+    CCol,
+    CDataTable,
+    CRow,
+    CLink,
+    CButton,
+    CFormGroup,
+    CLabel,
+    CInputGroup,
+    CInput, CBadge,
 } from "@coreui/react";
 import moment from "moment";
 import numeral from "numeral";
@@ -25,7 +25,15 @@ import { TextField } from "@material-ui/core";
 
 const { RangePicker } = DatePicker;
 
-const fields = ["user", "totalbetAmount", "totalWinAmount", "createdAt"];
+const fields = ["user", "totalbetAmount", "totalWinAmount", "type", "createdAt"];
+
+const getBadge = status => {
+    switch (status) {
+        case 'PLAYER':
+        case 1: return 'success'
+        default: return 'danger'
+    }
+}
 
 const View = () => {
   const [loading, setLoading] = useState(false);
@@ -47,7 +55,7 @@ const View = () => {
   const run = async () => {
     setLoading(true);
     let res
-    
+
     if(fromDate && toDate){
       res = await HTTP.fetchData(
         "/users",
@@ -221,6 +229,14 @@ const View = () => {
                     lockedPrice: (item) => (
                       <td>{numeral(item.totalWinAmount).format("0,0.00")}</td>
                     ),
+                      'type':
+                          (item)=>(
+                              <td>
+                                  <CBadge color={getBadge(item.type)}>
+                                      {item.type}
+                                  </CBadge>
+                              </td>
+                          ),
                     createdAt: (item) => (
                       <td>
                         {moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss")}
@@ -271,6 +287,14 @@ const View = () => {
                     lockedPrice: (item) => (
                       <td>{numeral(item.totalWinAmount).format("0,0.00")}</td>
                     ),
+                      'type':
+                          (item)=>(
+                              <td>
+                                  <CBadge color={getBadge(item.type)}>
+                                      {item.type}
+                                  </CBadge>
+                              </td>
+                          ),
                     createdAt: (item) => (
                       <td>
                         {moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss")}
