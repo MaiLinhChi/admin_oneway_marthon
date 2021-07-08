@@ -82,18 +82,9 @@ const View = () => {
     run();
   }, []);
 
-  const handleChangeSearchTime = (e) => {
-    if (e !== null) {
-      setFromDate(e[0]._d);
-      setToDate(e[1]._d);
-    } else {
-      setFromDate(null);
-      setToDate(null);
-    }
-  };
-
   const onChangeFromDate = (e) => {
     const value = new Date(e.target.value);
+    value.setSeconds(0,0)
     if (value > toDate) {
       setToDate(value);
     }
@@ -102,6 +93,7 @@ const View = () => {
 
   const onChangeToDate = (e) => {
     const value = new Date(e.target.value);
+    value.setSeconds(59,59)
     if (value < fromDate) {
       setFromDate(value);
     }

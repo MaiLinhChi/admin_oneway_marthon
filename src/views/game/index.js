@@ -91,6 +91,7 @@ const View = () => {
 
   const onChangeFromDate = (e) => {
     const value = new Date(e.target.value);
+    value.setSeconds(0,0)
     if (value > toDate) {
       setToDate(value);
     }
@@ -99,6 +100,7 @@ const View = () => {
 
   const onChangeToDate = (e) => {
     const value = new Date(e.target.value);
+    value.setSeconds(59,59)
     if (value < fromDate) {
       setFromDate(value);
     }
@@ -176,7 +178,6 @@ const View = () => {
             </div>
             <div className="text-muted float-right mt-1">
               <p className="float-left">
-                {" "}
                 Total Bet Amount:{" "}
                 <b>{numeral(totalbetAmount).format("0,0.00")}</b> - Total
                 Commission: <b>{numeral(totalComm).format("0,0.00")}</b>
