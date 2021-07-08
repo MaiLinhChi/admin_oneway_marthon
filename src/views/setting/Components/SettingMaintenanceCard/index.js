@@ -43,14 +43,14 @@ import { TextField } from "@material-ui/core";
 const SettingMaintenanceCard = () => {
   const [maintenanceList, setMaintenanceList] = useState([]);
 
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [isErrorMessage, setIsErrorMessage] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
-  const [status, setStatus] = useState('suspense');
+  const [status, setStatus] = useState("suspense");
 
   const [collapsedMaintenanceList, setCollapsedMaintenanceList] =
     React.useState(true);
@@ -60,30 +60,30 @@ const SettingMaintenanceCard = () => {
 
   const columnsMaintenanceList = [
     {
-      title: 'Message',
-      dataIndex: 'data',
-      key: 'message',
+      title: "Message",
+      dataIndex: "data",
+      key: "message",
       render: (data) => <span>{data?.message}</span>,
     },
     {
-      title: 'Start time',
-      dataIndex: 'data',
-      key: 'startTime',
+      title: "Start time",
+      dataIndex: "data",
+      key: "startTime",
       render: (data) => <span>{data?.startTime}</span>,
     },
     {
-      title: 'End Time',
-      dataIndex: 'data',
-      key: 'endTime',
+      title: "End Time",
+      dataIndex: "data",
+      key: "endTime",
       render: (data) => <span>{data?.endTime}</span>,
     },
     {
-      title: 'Status',
-      dataIndex: 'data',
-      key: 'status',
-      align: 'center',
+      title: "Status",
+      dataIndex: "data",
+      key: "status",
+      align: "center",
       render: (data) => (
-        <span style={{ textTransform: 'capitalize' }}>{data?.status}</span>
+        <span style={{ textTransform: "capitalize" }}>{data?.status}</span>
       ),
     },
   ];
@@ -91,10 +91,10 @@ const SettingMaintenanceCard = () => {
   const getListMaintenance = async () => {
     setLoadingListMaintenance(true);
     const res = await HTTP.fetchData(
-      '/configs',
-      'GET',
+      "/configs",
+      "GET",
       {
-        key: 'maintenance',
+        key: "maintenance",
       },
       null
     );
@@ -108,12 +108,12 @@ const SettingMaintenanceCard = () => {
 
   const onChangeMessage = (value) => {
     setMessage(value);
-    if (value.trim() === '') {
+    if (value.trim() === "") {
       setIsErrorMessage(true);
-      setErrorMessage('Message is required');
+      setErrorMessage("Message is required");
     } else {
       setIsErrorMessage(false);
-      setErrorMessage('');
+      setErrorMessage("");
     }
   };
 
@@ -134,36 +134,36 @@ const SettingMaintenanceCard = () => {
   };
 
   const clearData = () => {
-    setMessage('');
+    setMessage("");
     setStartTime(null);
     setEndTime(null);
-    setStatus('suspense');
+    setStatus("suspense");
   };
 
   const handleSettingMaintenance = async () => {
-    if (message.trim() === '' || startTime === null || endTime === null) {
+    if (message.trim() === "" || startTime === null || endTime === null) {
       showNotification(
         `Setting maintenance`,
-        'Setting maintenance cannot be blank!'
+        "Setting maintenance cannot be blank!"
       );
     } else {
       setLoadingSettingMaintenance(true);
       HTTP.fetchData(`/config/maintenance`, `POST`, null, {
         data: {
           message,
-          startTime: moment(startTime).format('YYYY-MM-DD HH:mm:ss'),
-          endTime: moment(endTime).format('YYYY-MM-DD HH:mm:ss'),
+          startTime: moment(startTime).format("YYYY-MM-DD HH:mm:ss"),
+          endTime: moment(endTime).format("YYYY-MM-DD HH:mm:ss"),
           status,
         },
       })
         .then((res) => {
-          showNotification(`Setting maintenance`, 'Successfully!');
+          showNotification(`Setting maintenance`, "Successfully!");
           clearData();
           getListMaintenance();
           setLoadingSettingMaintenance(false);
         })
         .catch((err) => {
-          showNotification(`Setting maintenance`, 'Fail!');
+          showNotification(`Setting maintenance`, "Fail!");
           setLoadingSettingMaintenance(false);
         });
     }
@@ -183,16 +183,16 @@ const SettingMaintenanceCard = () => {
       </CCardHeader>
       <CCardBody>
         <CForm>
-          <CCol xs='12' sm='12'>
+          <CCol xs="12" sm="12">
             <CFade>
               {/* List Maintenance */}
               <CCard>
                 <CCardHeader>
                   <CRow>
-                    <CCol xs='11' sm='10'>
+                    <CCol xs="11" sm="10">
                       <b>List maintenance:</b>
                     </CCol>
-                    <CCol xs="1" sm='2'>
+                    <CCol xs="1" sm="2">
                       <div className="card-header-actions">
                         <CLink
                           className="card-header-action"
@@ -254,38 +254,41 @@ const SettingMaintenanceCard = () => {
                       marginTop: "1.5rem",
                     }}
                   >
-                    <CRow>
-                      <CCol lg={6} xs={12}>
-                        <TextField
-                          type="datetime-local"
-                          label="Start time"
-                          value={
-                            startTime
-                              ? moment(startTime).format("YYYY-MM-DDTHH:mm")
-                              : ""
-                          }
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          onChange={onChangeStartTime}
-                        />
-                      </CCol>
-                      <CCol lg={6} xs={12}>
-                        <TextField
-                          type="datetime-local"
-                          label="End time"
-                          value={
-                            endTime
-                              ? moment(endTime).format("YYYY-MM-DDTHH:mm")
-                              : ""
-                          }
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          onChange={onChangeEndTime}
-                        />
-                      </CCol>
-                    </CRow>
+                    <TextField
+                      type="datetime-local"
+                      label="Start time"
+                      value={
+                        startTime
+                          ? moment(startTime).format("YYYY-MM-DDTHH:mm")
+                          : ""
+                      }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      fullWidth
+                      onChange={onChangeStartTime}
+                    />
+                  </CFormGroup>
+
+                  <CFormGroup
+                    style={{
+                      marginTop: "1.5rem",
+                    }}
+                  >
+                    <TextField
+                      type="datetime-local"
+                      label="End time"
+                      fullWidth
+                      value={
+                        endTime
+                          ? moment(endTime).format("YYYY-MM-DDTHH:mm")
+                          : ""
+                      }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      onChange={onChangeEndTime}
+                    />
                   </CFormGroup>
 
                   <CFormGroup style={{ marginTop: "1.5rem" }}>
