@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   CCardBody,
@@ -272,7 +272,38 @@ const TakerListCard = ({feePercent}) => {
       handleSignIn();
     }
   };
+  const getCommData = async () => {
+    let commAddressList = await contractHightOrLow()
+        .methods.getShareCommAddress()
+        .call();
+    let commListTemp = [];
+    let result = [];
 
+    if (
+        commAddressList != null &&
+        commAddressList.length &&
+        commAddressList.length > 0
+    ) {
+      commListTemp = commAddressList.map(async (address, index) => {
+        let percent = await contractHightOrLow()
+            .methods.commAddress(address)
+            .call();
+        return { address, percent };
+      });
+    }
+
+    if (
+        commListTemp != null &&
+        commListTemp.length &&
+        commListTemp.length > 0
+    ) {
+      result = await Promise.all(commListTemp);
+    }
+    setCommAddressList(result);
+  };
+  useEffect(() => {
+    getCommData();
+  }, []);
   return (
     <CCard>
       <CCardBody>
