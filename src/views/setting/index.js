@@ -18,7 +18,10 @@ import {
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { Button, DatePicker, Radio, Table } from "antd";
-import { PlusOutlined, DeleteOutlined, LikeOutlined, DislikeOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import {
   detectAddress,
   convertAddressArrToString,
@@ -36,8 +39,10 @@ import PriceInput from "src/components/PriceInput";
 import ReduxServices from "src/common/redux";
 import Observer from "src/common/observer";
 import { OBSERVER_KEY } from "src/common/constants";
+import moment from "moment";
+import HTTP from "src/controller/API/HTTP";
 
-const { RangePicker } = DatePicker
+const { RangePicker } = DatePicker;
 
 const Account = () => {
   const [feePercent, setFeePercent] = useState(0);
@@ -55,19 +60,30 @@ const Account = () => {
     useState("");
 
   const [commAddressList, setCommAddressList] = useState([]);
-  const [maintenanceList, setMaintenanceList] = useState([{
-    id: 1,
-    message: 'Thích thì đóng thui',
-    startTime: '10/10/2000',
-    endTime: '11/11/2000',
-    status: 1
-  }]);
+  const [maintenanceList, setMaintenanceList] = useState([]);
+
+  const [message, setMessage] = useState("");
+  const [isErrorMessage, setIsErrorMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [isErrorTime, setIsErrorTime] = useState(false);
+  const [errorMessageTime, setErrorMessageTime] = useState("");
+
+  const [status, setStatus] = useState("suspense");
 
   const [collapsed, setCollapsed] = React.useState(true);
   const [collapsedAddressList, setCollapsedAddressList] = React.useState(true);
-  const [collapsedMaintenanceList, setCollapsedMaintenanceList] = React.useState(true);
+  const [collapsedMaintenanceList, setCollapsedMaintenanceList] =
+    React.useState(true);
   const [isLoading, setLoading] = useState(false);
   const [isLoadingComm, setLoadingComm] = useState(false);
+  const [loadingSettingMaintenance, setLoadingSettingMaintenance] =
+    useState(false);
+  const [loadingListMaintenance,setLoadingListMaintenance] = useState(false)
+
+  const [mountRangeTime, setMountRangeTime] = useState(true);
 
   const userData = useSelector((state) => state.userData);
 
@@ -111,51 +127,51 @@ const Account = () => {
   const columnsMaintenanceList = [
     {
       title: "Message",
-      dataIndex: "message",
+      dataIndex: "data",
       key: "message",
+      render: data =><span>{data?.message}</span>
     },
     {
       title: "Start Time",
-      dataIndex: "startTime",
+      dataIndex: "data",
       key: "startTime",
+      render: data => <span>{data?.startTime}</span>
     },
     {
       title: "End Time",
-      dataIndex: "endTime",
+      dataIndex: "data",
       key: "endTime",
+      render: data => <span>{data?.endTime}</span>
     },
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: "data",
       key: "status",
-      align: 'center',
-      render: (status) => (
-        <span
-          className="deleteButton"
-        >
-          {status === 1 ? <LikeOutlined style={{color: 'green'}} /> : <DislikeOutlined style={{color: 'red'}} /> }
-        </span>
-      ),
-    },
-    {
-      title: "Delete",
-      dataIndex: "delete",
-      key: "id",
-      align: 'center',
-      render: (id) => (
-        <span
-          className="deleteButton"
-        >
-          <DeleteOutlined />
-        </span>
+      align: "center",
+      render: data => (
+        <span style={{ textTransform: "capitalize" }}>{data?.status}</span>
       ),
     },
   ];
 
+  const getListMaintenance = async () =>{
+    setLoadingListMaintenance(true)
+    const res = await HTTP.fetchData(
+      "/configs",
+      "GET",
+      {
+        key: 'maintenance'
+      },
+      null
+    );
+    setMaintenanceList(res)
+    setLoadingListMaintenance(false)
+  }
   useEffect(() => {
     contractHightOrLow().methods.feePercent().call().then(setFeePercent);
     // eslint-disable-next-line
     getCommData();
+    getListMaintenance()
   }, []);
 
   const getCommData = async () => {
@@ -469,6 +485,78 @@ const Account = () => {
     }
   };
 
+  const onChangeMessage = (value) => {
+    setMessage(value);
+    if (value.trim() === "") {
+      setIsErrorMessage(true);
+      setErrorMessage("Message is required");
+    } else {
+      setIsErrorMessage(false);
+      setErrorMessage("");
+    }
+  };
+
+  const disabledDate = (current) => {
+    return current && current < moment().startOf("day");
+  };
+
+  const handleChangeTime = (e) => {
+    if (e !== null) {
+      setIsErrorTime(false);
+      setErrorMessageTime("");
+      setStartTime(e[0]._d);
+      setEndTime(e[1]._d);
+    } else {
+      setIsErrorTime(true);
+      setErrorMessageTime("Start time / End time is required");
+    }
+  };
+
+  const clearData = () => {
+    setMessage("");
+    setStartTime(null);
+    setEndTime(null);
+    setStatus("suspense");
+    setMountRangeTime(false)
+    setTimeout(()=>setMountRangeTime(true),0)
+  };
+
+  const handleSettingMaintenance = async () => {
+    if (message.trim() === "" || startTime === null || endTime === null) {
+      showNotification(
+        `Setting maintenance`,
+        "Setting maintenance cannot be blank!"
+      );
+    } else {
+      setLoadingSettingMaintenance(true);
+      HTTP.fetchData(`/config/maintenance`, `POST`, null, {
+        data: {
+          message,
+          startTime: moment(startTime).format("YYYY-MM-DD HH:mm:ss"),
+          endTime: moment(endTime).format("YYYY-MM-DD HH:mm:ss"),
+          status,
+        },
+      })
+        .then((res) => {
+          showNotification(`Setting maintenance`, "Successfully!");
+          clearData();
+          getListMaintenance()
+          setLoadingSettingMaintenance(false);
+        })
+        .catch((err) => {
+          showNotification(`Setting maintenance`, "Fail!");
+          setLoadingSettingMaintenance(false);
+        });
+    }
+  };
+
+  const setSettingMaintenance = (setting) =>{
+    setMessage(setting.data.message)
+    setStartTime(setting.data.startTime)
+    setEndTime(setting.data.endTime)
+    setStatus(setting.data.status)
+  }
+
   return (
     <CRow>
       {/* --------------------------------- Left form -------------------------------------------*/}
@@ -521,7 +609,7 @@ const Account = () => {
                       <CCardBody>
                         <CFormGroup>
                           <CLabel htmlFor="liquidation-ratio">
-                            _feePercent (uint256){" "}
+                            _feePercent (uint256)
                           </CLabel>
                           <CInputGroup>
                             <PriceInput
@@ -563,7 +651,7 @@ const Account = () => {
         {/* ---------------- */}
         <CCard>
           <CCardHeader>
-            <b>Settings maintenance: </b>
+            <b>Setting maintenance: </b>
           </CCardHeader>
           <CCardBody>
             <CForm>
@@ -581,7 +669,9 @@ const Account = () => {
                             <CLink
                               className="card-header-action"
                               onClick={() =>
-                                setCollapsedMaintenanceList(!collapsedMaintenanceList)
+                                setCollapsedMaintenanceList(
+                                  !collapsedMaintenanceList
+                                )
                               }
                             >
                               <CIcon
@@ -600,9 +690,15 @@ const Account = () => {
                     <CCollapse show={collapsedMaintenanceList}>
                       <CCardBody>
                         <Table
+                          loading={loadingListMaintenance}
                           dataSource={maintenanceList}
                           columns={columnsMaintenanceList}
                           pagination={false}
+                          onRow={(record)=>{
+                            return {
+                              onClick: () => setSettingMaintenance(record)
+                            }
+                          }}
                         />
                       </CCardBody>
                     </CCollapse>
@@ -614,35 +710,57 @@ const Account = () => {
                       <CFormGroup>
                         <CLabel>Message:</CLabel>
                         <CInputGroup>
-                          <CInput placeholder="Message" />
+                          <CInput
+                            value={message}
+                            onChange={(e) => onChangeMessage(e.target.value)}
+                            placeholder="Message"
+                          />
+                          {isErrorMessage && (
+                            <span className="input-error">{errorMessage}</span>
+                          )}
                         </CInputGroup>
                       </CFormGroup>
 
-                      <CFormGroup style={{ marginTop: "1.5rem" }}>
-          
-                            <CLabel>
-                              Start Time ~ End Time
-                            </CLabel>
-                            <CInputGroup>
-                            <RangePicker style={{ width: "100%" }} showTime />
-                            </CInputGroup>
-                          
-                      </CFormGroup>
+                      {mountRangeTime && (
+                        <CFormGroup style={{ marginTop: "1.5rem" }}>
+                          <CLabel>Start Time ~ End Time</CLabel>
+                          <CInputGroup>
+                            <RangePicker
+                              value={startTime && endTime ? [moment(startTime),moment(endTime)]: ''}
+                              disabledDate={disabledDate}
+                              placeholder={["Start Time", "End Time"]}
+                              style={{ width: "100%" }}
+                              showTime
+                              onChange={handleChangeTime}
+                            />
+                            {isErrorTime && (
+                              <span className="input-error">
+                                {errorMessageTime}
+                              </span>
+                            )}
+                          </CInputGroup>
+                        </CFormGroup>
+                      )}
 
-                      <CFormGroup>
-                        <CLabel >Status:</CLabel>
+                      <CFormGroup style={{ marginTop: "1.5rem" }}>
+                        <CLabel>Status:</CLabel>
                         <CInputGroup>
-                          <Radio.Group defaultValue={1}>
-                            <Radio value={1}>Suspense</Radio>
-                            <Radio value={2}>Active</Radio>
+                          <Radio.Group
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                          >
+                            <Radio value="suspense">Suspense</Radio>
+                            <Radio value="active">Active</Radio>
                           </Radio.Group>
                         </CInputGroup>
                       </CFormGroup>
 
                       <Button
+                        onClick={handleSettingMaintenance}
                         type="primary"
                         className="mt-2"
                         style={{ width: "100%" }}
+                        loading={loadingSettingMaintenance}
                       >
                         Save
                       </Button>
