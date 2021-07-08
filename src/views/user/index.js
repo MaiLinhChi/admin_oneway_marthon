@@ -180,8 +180,9 @@ const View = () => {
             <div className="text-muted float-right mt-1">
               <p className="float-left">
                 Total Bet Amount:
-                <b>{numeral(totalbetAmount).format("0,0.00")}</b> - Total Win
-                Amount: <b>{numeral(totalWinAmount).format("0,0.00")}</b>
+                <b>{numeral(totalbetAmount).format("0,0.00")}</b><br/>
+                Total Win Amount:
+                <b>{numeral(totalWinAmount).format("0,0.00")}</b>
               </p>
             </div>
           </CCardHeader>
