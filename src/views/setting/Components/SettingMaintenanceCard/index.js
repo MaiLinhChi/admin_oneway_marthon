@@ -69,13 +69,13 @@ const SettingMaintenanceCard = () => {
       title: "Start time",
       dataIndex: "data",
       key: "startTime",
-      render: (data) => <span>{data?.startTime}</span>,
+      render: (data) => <span>{data?.startTime && moment(data?.startTime).format('YYYY-MM-DD HH:mm')}</span>,
     },
     {
       title: "End Time",
       dataIndex: "data",
       key: "endTime",
-      render: (data) => <span>{data?.endTime}</span>,
+      render: (data) => <span>{data?.endTime && moment(data?.endTime).format('YYYY-MM-DD HH:mm')}</span>,
     },
     {
       title: "Status",
@@ -151,8 +151,8 @@ const SettingMaintenanceCard = () => {
       HTTP.fetchData(`/config/maintenance`, `POST`, null, {
         data: {
           message,
-          startTime: moment(startTime).format("YYYY-MM-DD HH:mm:ss"),
-          endTime: moment(endTime).format("YYYY-MM-DD HH:mm:ss"),
+          startTime: startTime.getTime(),
+          endTime: endTime.getTime(),
           status,
         },
       })
