@@ -24,7 +24,7 @@ import { DatePicker } from "antd";
 
 const { RangePicker } = DatePicker;
 
-const fields = ["user", "totalbetAmount", "totalWinAmount", "type", "createdAt"];
+const fields = ["user", "totalbetAmount", "totalWinAmount", "type"];
 
 const getBadge = status => {
     switch (status) {
@@ -49,7 +49,7 @@ const View = () => {
     { label: "Address", key: "user" },
     { label: "Total Bet Amount", key: "totalbetAmount" },
     { label: "Total Win Amount", key: "totalWinAmount" },
-    { label: "createdAt", key: "createdAt" },
+    { label: "type", key: "type" },
   ];
   const run = async () => {
     setLoading(true);
@@ -201,11 +201,6 @@ const View = () => {
                                   </CBadge>
                               </td>
                           ),
-                    createdAt: (item) => (
-                      <td>
-                        {moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss")}
-                      </td>
-                    ),
                   }}
                 />
               </CCol>
@@ -257,12 +252,7 @@ const View = () => {
                                       {item.type}
                                   </CBadge>
                               </td>
-                          ),
-                    createdAt: (item) => (
-                      <td>
-                        {moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss")}
-                      </td>
-                    ),
+                    )
                   }}
                 />
               </CCol>
