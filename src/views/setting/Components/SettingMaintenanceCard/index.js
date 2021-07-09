@@ -50,7 +50,7 @@ const SettingMaintenanceCard = () => {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
-  const [status, setStatus] = useState("suspense");
+  const [status, setStatus] = useState('suspend');
 
   const [collapsedMaintenanceList, setCollapsedMaintenanceList] =
     React.useState(true);
@@ -91,10 +91,10 @@ const SettingMaintenanceCard = () => {
   const getListMaintenance = async () => {
     setLoadingListMaintenance(true);
     const res = await HTTP.fetchData(
-      "/configs",
-      "GET",
+      '/configs',
+      'GET',
       {
-        key: "maintenance",
+        key: 'maintenance',
       },
       null
     );
@@ -108,12 +108,12 @@ const SettingMaintenanceCard = () => {
 
   const onChangeMessage = (value) => {
     setMessage(value);
-    if (value.trim() === "") {
+    if (value.trim() === '') {
       setIsErrorMessage(true);
-      setErrorMessage("Message is required");
+      setErrorMessage('Message is required');
     } else {
       setIsErrorMessage(false);
-      setErrorMessage("");
+      setErrorMessage('');
     }
   };
 
@@ -134,10 +134,10 @@ const SettingMaintenanceCard = () => {
   };
 
   const clearData = () => {
-    setMessage("");
+    setMessage('');
     setStartTime(null);
     setEndTime(null);
-    setStatus("suspense");
+    setStatus('suspend');
   };
 
   const handleSettingMaintenance = async () => {
@@ -167,13 +167,6 @@ const SettingMaintenanceCard = () => {
           setLoadingSettingMaintenance(false);
         });
     }
-  };
-
-  const setSettingMaintenance = (setting) => {
-    setMessage(setting.data.message);
-    setStartTime(setting.data.startTime);
-    setEndTime(setting.data.endTime);
-    setStatus(setting.data.status);
   };
 
   return (
@@ -222,11 +215,6 @@ const SettingMaintenanceCard = () => {
                       dataSource={maintenanceList}
                       columns={columnsMaintenanceList}
                       pagination={false}
-                      onRow={(record) => {
-                        return {
-                          onClick: () => setSettingMaintenance(record),
-                        };
-                      }}
                     />
                   </CCardBody>
                 </CCollapse>
@@ -298,7 +286,7 @@ const SettingMaintenanceCard = () => {
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
                       >
-                        <Radio value="suspense">Suspense</Radio>
+                        <Radio value="suspend">Suspend</Radio>
                         <Radio value="active">Active</Radio>
                       </Radio.Group>
                     </CInputGroup>
