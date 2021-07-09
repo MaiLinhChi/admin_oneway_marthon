@@ -50,7 +50,7 @@ const SettingMaintenanceCard = () => {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
-  const [status, setStatus] = useState("suspense");
+  const [status, setStatus] = useState("suspend");
 
   const [collapsedMaintenanceList, setCollapsedMaintenanceList] =
     React.useState(true);
@@ -222,11 +222,6 @@ const SettingMaintenanceCard = () => {
                       dataSource={maintenanceList}
                       columns={columnsMaintenanceList}
                       pagination={false}
-                      onRow={(record) => {
-                        return {
-                          onClick: () => setSettingMaintenance(record),
-                        };
-                      }}
                     />
                   </CCardBody>
                 </CCollapse>
@@ -298,7 +293,7 @@ const SettingMaintenanceCard = () => {
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
                       >
-                        <Radio value="suspense">Suspense</Radio>
+                        <Radio value="suspend">Suspend</Radio>
                         <Radio value="active">Active</Radio>
                       </Radio.Group>
                     </CInputGroup>
