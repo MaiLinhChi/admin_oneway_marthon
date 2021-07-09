@@ -50,7 +50,7 @@ const SettingMaintenanceCard = () => {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
-  const [status, setStatus] = useState("suspend");
+  const [status, setStatus] = useState('suspend');
 
   const [collapsedMaintenanceList, setCollapsedMaintenanceList] =
     React.useState(true);
@@ -167,13 +167,6 @@ const SettingMaintenanceCard = () => {
           setLoadingSettingMaintenance(false);
         });
     }
-  };
-
-  const setSettingMaintenance = (setting) => {
-    setMessage(setting.data.message);
-    setStartTime(setting.data.startTime);
-    setEndTime(setting.data.endTime);
-    setStatus(setting.data.status);
   };
 
   return (
