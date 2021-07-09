@@ -91,10 +91,10 @@ const SettingMaintenanceCard = () => {
   const getListMaintenance = async () => {
     setLoadingListMaintenance(true);
     const res = await HTTP.fetchData(
-      "/configs",
-      "GET",
+      '/configs',
+      'GET',
       {
-        key: "maintenance",
+        key: 'maintenance',
       },
       null
     );
@@ -108,12 +108,12 @@ const SettingMaintenanceCard = () => {
 
   const onChangeMessage = (value) => {
     setMessage(value);
-    if (value.trim() === "") {
+    if (value.trim() === '') {
       setIsErrorMessage(true);
-      setErrorMessage("Message is required");
+      setErrorMessage('Message is required');
     } else {
       setIsErrorMessage(false);
-      setErrorMessage("");
+      setErrorMessage('');
     }
   };
 
@@ -134,10 +134,10 @@ const SettingMaintenanceCard = () => {
   };
 
   const clearData = () => {
-    setMessage("");
+    setMessage('');
     setStartTime(null);
     setEndTime(null);
-    setStatus("suspense");
+    setStatus('suspend');
   };
 
   const handleSettingMaintenance = async () => {
