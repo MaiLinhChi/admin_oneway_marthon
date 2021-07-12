@@ -303,11 +303,8 @@ export default class HTTP {
       axios(params)
         .then(function (response) {
           // handle success
-          if (response.status >= 200 && response.status < 300) {
-            return resolve(response.data);
-          } else {
-            return resolve(null);
-          }
+          if (response.status >= 200 && response.status < 300) return resolve(response.data);
+          return resolve(null);
         })
         .catch(function (error) {
           // handle error
@@ -317,3 +314,11 @@ export default class HTTP {
     });
   }
 }
+axios.interceptors.response.use(response => {
+  return response;
+}, error => {
+  if (error.response.status === 401) {
+    window.location = '/#/login'
+  }
+  throw Error('Login Expired');
+});
