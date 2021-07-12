@@ -66,18 +66,17 @@ const View = () => {
       res = await HTTP.fetchData(
         "/bets",
         "GET",
-        { sort: "desc", fromDate, toDate, limit: 100, skip: (currentPage - 1) },
+        { sort: "desc", fromDate, toDate, limit: 50, skip: (currentPage - 1) },
         null
       );
     } else {
       res = await HTTP.fetchData(
         "/bets",
         "GET",
-        { sort: "desc", limit: 100, skip: (currentPage - 1) },
+        { sort: "desc", limit: 50, skip: (currentPage - 1) },
         null
       );
     }
-    console.log(res.data);
     setBets(res.data);
     setTotalPage(res.totalPage)
     setLoading(false);
