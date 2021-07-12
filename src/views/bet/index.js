@@ -11,6 +11,7 @@ import {
   CFormGroup,
   CInputGroup,
   CButton,
+  CPagination
 } from "@coreui/react";
 import moment from "moment";
 import numeral from "numeral";
@@ -53,6 +54,9 @@ const View = () => {
 
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPage, setTotalPage] = useState(0)
+
 
   const run = async () => {
     setLoading(true);
@@ -62,25 +66,29 @@ const View = () => {
       res = await HTTP.fetchData(
         "/bets",
         "GET",
-        { sort: "desc", fromDate, toDate, limit: 10000000000 },
+        { sort: "desc", fromDate, toDate, limit: 100, skip: (currentPage - 1) },
         null
       );
     } else {
       res = await HTTP.fetchData(
         "/bets",
         "GET",
-        { sort: "desc", limit: 10000000000 },
+        { sort: "desc", limit: 100, skip: (currentPage - 1) },
         null
       );
     }
-
+    console.log(res.data);
     setBets(res.data);
-    // setTotalPage(res.totalPage)
+    setTotalPage(res.totalPage)
     setLoading(false);
   };
   useEffect(() => {
     run();
   }, []);
+
+  useEffect(() => {
+    run();
+  }, [currentPage]);
 
   const onChangeFromDate = (e) => {
     const value = new Date(e.target.value);
@@ -99,6 +107,24 @@ const View = () => {
     }
     setToDate(value);
   };
+
+  const onChangePage = (page) => {
+    if(page === 0){
+      setCurrentPage(1)
+    }else{
+      setCurrentPage(page)
+    }
+  }
+
+  const onSearch = () => {
+    if(currentPage != 1)
+    {
+      setCurrentPage(1)
+    }else{
+      run()
+    }
+  }
+
   return (
     <CRow>
       <CCol xs="12" lg="12">
@@ -154,7 +180,7 @@ const View = () => {
                         marginTop: "10px",
                         minWidth: "80px",
                       }}
-                      onClick={() => run()}
+                      onClick={() => onSearch()}
                     >
                       Search
                     </CButton>
@@ -170,8 +196,6 @@ const View = () => {
               striped
               columnFilter
               loading={loading}
-              itemsPerPage={20}
-              pagination
               scopedSlots={{
                 user: (item) => (
                   <td>
@@ -233,6 +257,13 @@ const View = () => {
                 ),
               }}
             />
+            <div className={'mt-2'} >
+              <CPagination
+                activePage={currentPage}
+                pages={totalPage}
+                onActivePageChange={(page) => onChangePage(page)}
+              ></CPagination>
+            </div>
           </CCardBody>
         </CCard>
       </CCol>
