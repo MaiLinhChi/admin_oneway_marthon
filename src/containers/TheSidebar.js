@@ -20,12 +20,13 @@ const TheSidebar = ({sidebarShow, setSidebarShow}) => {
       show={sidebarShow}
       onShowChange={(val) => setSidebarShow(val)}
     >
-      <CSidebarBrand className="d-md-down-none" to="/">
+      <CSidebarBrand className="d-md-down-none d-flex align-items-center" to="/">
         <CImg
           src={'logo.svg'}
-          // width={'150'}
+          width={40}
+          className="mr-2"
         />
-        <h5 style={{marginLeft: 10, color: '#fff', fontWeight: 'bold'}}>Binary Option</h5>
+        <h5 style={{margin: 0, color: '#fff', fontWeight: 'bold'}}>OneWay Option</h5>
       </CSidebarBrand>
       <CSidebarNav>
 

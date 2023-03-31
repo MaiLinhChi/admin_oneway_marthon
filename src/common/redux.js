@@ -1,6 +1,4 @@
 import storeRedux from 'src/controller/Redux/store/configureStore'
-import MetaMaskServices from 'src/controller/MetaMask'
-import WalletConnectServices from 'src/controller/WalletConnect'
 import StorageActions from 'src/controller/Redux/actions/storageActions'
 import PageReduxAction from 'src/controller/Redux/actions/pageActions'
 import { METAMASK_INFO } from 'src/common/constants'
@@ -23,17 +21,6 @@ export default class ReduxServices {
 
   static async detectConnectionMethod () {
     const { connectionMethod } = storeRedux.getState()
-
-    switch (connectionMethod) {
-    case CONNECTION_METHOD.METAMASK:
-      await MetaMaskServices.refresh()
-      break
-    case CONNECTION_METHOD.WALLET_CONNECT:
-      WalletConnectServices.refresh()
-      break
-    default:
-      break
-    }
   }
 
 
@@ -183,82 +170,6 @@ export default class ReduxServices {
     }
   }
 
-  static loginMetamask (callback = null, callbackErr = null) {
-    return new Promise(async (resolve, reject) => {
-      const signMetaMask = (callback = null) => {
-        return new Promise(async (resolve, reject) => {
-          try {
-            const { metamaskRedux, settingRedux, locale } = storeRedux.getState()
-            const { messages } = locale
-            if(process.env.REACT_APP_IS_SIGNED_REQUIRED === "true"){
-                let msgHash = settingRedux.messageHash || 'Binary Option'
-                let content = await MetaMaskServices.signPersonalMessage(metamaskRedux.address, msgHash)
-
-                if (content) {
-                  let newMetaMask = Object.assign({}, metamaskRedux)
-                  ReduxServices.callDispatchAction(PageReduxAction.setMetamask(newMetaMask))
-                  let newUserLogin = Object.assign({}, { address: metamaskRedux.address, sig: content, isSigned: true })
-                  ReduxServices.callDispatchAction(StorageActions.setUserData(newUserLogin))
-                  // ReduxServices.refreshUserBalance()
-                  callback && callback()
-                  return resolve()
-                } else {
-                  showNotification(messages.txtWarningActiveMetaMask)
-                  ReduxServices.callDispatchAction(StorageActions.setUserData({}))
-                  callbackErr && callbackErr()
-                  return resolve()
-                }
-            }else{
-              let newMetaMask = Object.assign({}, metamaskRedux)
-              ReduxServices.callDispatchAction(PageReduxAction.setMetamask(newMetaMask))
-              let newUserLogin = Object.assign({}, { address: metamaskRedux.address, isSigned: true })
-              ReduxServices.callDispatchAction(StorageActions.setUserData(newUserLogin))
-              // ReduxServices.refreshUserBalance()
-              callback && callback()
-              return resolve()
-            }  
-          } catch (error) {
-            showNotification(messages.txtWarningSigninMetaMaskError)
-            reject(error)
-          }
-        })
-      }
-
-      const { metamaskRedux, locale } = storeRedux.getState()
-      const { messages } = locale
-      let currentWeb3 = window.ethereum
-      try {
-        // Check if MetaMask is installed
-        if (!currentWeb3) {
-          showNotification(messages.txtWarningInstallMetaMask)
-          return resolve(null)
-        }
-
-        // check network allowed
-        const findNetwork = parseInt(process.env.REACT_APP_NETWORK_ID)
-        let network = findNetwork || 0
-        if (metamaskRedux.network !== network) {
-          await MetaMaskServices.addNewChain(network)
-        }
-
-        if (metamaskRedux.accounts) {
-          let isSigned = ReduxServices.checkIsSigned()
-          if (!isSigned) {
-            signMetaMask(callback)
-          } else {
-            callback && callback()
-            return resolve(null)
-          }
-        } else {
-          return resolve(null)
-        }
-      } catch (error) {
-        callbackErr && callbackErr()
-        return resolve(error)
-      }
-    })
-  }
-
   static resetUser () {
     ReduxServices.callDispatchAction(StorageActions.setUserData(null))
   }
@@ -305,80 +216,6 @@ export default class ReduxServices {
   static getConnectionMethod () {
     const { connectionMethod } = storeRedux.getState()
     return connectionMethod
-  }
-
-  static loginWalletConnect (callback = null, callbackErr = null) {
-    return new Promise(async (resolve, reject) => {
-      const signWalletConnect = (callback = null) => {
-        return new Promise(async (resolve, reject) => {
-          try {
-            const { walletConnect, settingRedux, locale } = storeRedux.getState()
-            const { messages } = locale
-            const address = walletConnect.address
-            if (process.env.REACT_APP_IS_SIGNED_REQUIRED === "true") {
-              let msgHash = settingRedux.messageHash
-              let signature = await WalletConnectServices.signPersonalMessage(msgHash, address)
-              if (signature) {
-                let newUserLogin = Object.assign({}, { address: walletConnect.address, sig: signature, isSigned: true })
-                ReduxServices.callDispatchAction(StorageActions.setUserData(newUserLogin))
-                // ReduxServices.refreshUserBalance()
-                callback && callback()
-                return resolve()
-              } else {
-                showNotification(messages.txtWarningActiveMetaMask)
-                ReduxServices.callDispatchAction(StorageActions.setUserData({}))
-                callbackErr && callbackErr()
-                return resolve()
-              }
-            } else {
-              let newUserLogin = Object.assign({}, { address: walletConnect.address, isSigned: true })
-              ReduxServices.callDispatchAction(StorageActions.setUserData(newUserLogin))
-              // ReduxServices.refreshUserBalance()
-              callback && callback()
-              return resolve()
-            }
-            
-          } catch (error) {
-            showNotification(messages.txtWarningActiveMetaMask)
-            reject(error)
-          }
-        })
-      }
-      const { walletConnect, locale } = storeRedux.getState()
-      const { messages } = locale
-      try {
-        if (!walletConnect.connector) {
-          showNotification(messages.txtWarningSigninMetaMaskError)
-          return resolve(null)
-        }
-
-        // check network allowed
-        const findNetwork = parseInt(process.env.REACT_APP_NETWORK_ID)
-        let network = findNetwork || 0
-        if (walletConnect.chainId !== network) {
-          showNotification(messages.onlySupportNetwork.replace('[network]', network))
-          ReduxServices.updateWalletConnect({ connected: false })
-          walletConnect.connector.killSession()
-          return resolve(null)
-        }
-
-        if (walletConnect.address) {
-          let isSigned = ReduxServices.checkIsSigned()
-          if (!isSigned) {
-            signWalletConnect(callback)
-          } else {
-            callback && callback()
-            return resolve(null)
-          }
-        } else {
-          ReduxServices.callDispatchAction(StorageActions.setUserData(null))
-          return resolve(null)
-        }
-      } catch (error) {
-        callbackErr && callbackErr()
-        return resolve(error)
-      }
-    })
   }
 
   static async updateWalletConnect (data) {

@@ -22,7 +22,7 @@ const TheContent = () => {
     )
   return (
     <main className="c-main">
-      <CContainer fluid>
+      <CContainer>
         <Suspense fallback={loading}>
           <Switch>
             {routes.map((route, idx) => {
@@ -39,7 +39,7 @@ const TheContent = () => {
                   )} />
               )
             })}
-            <Redirect from="/" to="/dashboard" />
+            {/* <Redirect from="/" to="/dashboard" /> */}
           </Switch>
         </Suspense>
       </CContainer>

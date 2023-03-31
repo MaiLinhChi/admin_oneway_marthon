@@ -7,10 +7,7 @@ import {
 } from './index'
 import { OBSERVER_KEY, CONNECTION_METHOD } from 'src/common/constants'
 import { isMobile } from 'react-device-detect'
-import MetaMaskServices from 'src/controller/MetaMask'
-import StorageAction from 'src/controller/Redux/actions/storageActions'
 import MyModal from 'src/components/MyModal'
-import ConnectApp from 'src/components/ConnectApp'
 import Observer from 'src/common/observer'
 
 const TheLayout = () => {
@@ -19,7 +16,6 @@ const TheLayout = () => {
 
   const metamaskRedux = useSelector(state => state.metamaskRedux)
   const dispatch = useDispatch();
-  const dispatchSetConnectionMethod = (method) => dispatch(StorageAction.setConnectionMethod(method))
   const myModal = useRef()
 
   
@@ -27,8 +23,6 @@ const TheLayout = () => {
     Observer.on(OBSERVER_KEY.SIGN_IN, handleSignIn)
 
     if(metamaskRedux && metamaskRedux.address){
-      dispatchSetConnectionMethod(CONNECTION_METHOD.METAMASK)
-      MetaMaskServices.initialize()
     }
     return function cleanup() {
       Observer.removeListener(OBSERVER_KEY.SIGN_IN, handleSignIn)
@@ -38,8 +32,6 @@ const TheLayout = () => {
 
   useEffect(() => {
     if(metamaskRedux && metamaskRedux.address){
-      dispatchSetConnectionMethod(CONNECTION_METHOD.METAMASK)
-      MetaMaskServices.initialize()
     }
 
   // eslint-disable-next-line
@@ -51,15 +43,9 @@ const TheLayout = () => {
 
   const handleSignIn = async (callback = null, callbackErr = null) => {
     if (isMobile) {
-      dispatchSetConnectionMethod(CONNECTION_METHOD.METAMASK)
-      MetaMaskServices.initialize()
     } else {
       myModal.current.openModal(
-        <ConnectApp
-          closeModal={closeModal}
-          callback={() => callback(callback)}
-          callbackErr={() => callbackErr(callbackErr)}
-        />, { modalWidth: 380 }
+        <h1>hello</h1>
       )
     }
   }
@@ -68,7 +54,7 @@ const TheLayout = () => {
     <div className="c-app c-default-layout">
       <TheSidebar sidebarShow={sidebarShow} setSidebarShow={setSidebarShow}/>
       <div className="c-wrapper">
-        <TheHeader sidebarShow={sidebarShow} setSidebarShow={setSidebarShow}/>
+        {/* <TheHeader sidebarShow={sidebarShow} setSidebarShow={setSidebarShow}/> */}
         <div className="c-body">
           <TheContent/>
         </div>

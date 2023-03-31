@@ -24,7 +24,7 @@ var initState = {
   isloading: true,
   tokensRedux: [],
   setting: {},
-  tomoPrice: 0
+  tomoPrice: 0,
 }
 
 export default initState

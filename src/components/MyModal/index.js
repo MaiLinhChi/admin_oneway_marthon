@@ -19,7 +19,7 @@ class MyModal extends React.Component {
     // code here
   }
 
-  openModal = (modalContent, config = { modalWidth: 600, closable: true, wrapClassName: '', maskStyle: {} }) => {
+  openModal = (modalContent, config = { modalWidth: 800, closable: true, wrapClassName: '', maskStyle: {} }) => {
     this.setState({
       isShowModal: true,
       modalContent,

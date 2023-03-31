@@ -1,6 +1,8 @@
 import { sygnet } from './sygnet'
 import { logo } from './logo'
 import { logoNegative } from './logo-negative'
+import { EyeOn } from './eye-on'
+import { EyeOff } from './eye-off'
 
 import {
   cibSkype,
@@ -104,6 +106,7 @@ import {
   cilPeople,
   cilPhone,
   cilPrint,
+  cilRunning,
   cilPuzzle,
   cilSave,
   cilScrubber,
@@ -149,6 +152,7 @@ export const icons = Object.assign({}, {
   cilBookmark,
   cilCalculator,
   cilCalendar,
+  cilRunning,
   cilCloudDownload,
   cilChartPie,
   cilCheck,
@@ -258,4 +262,4 @@ export const icons = Object.assign({}, {
   cibPaypal,
   cibGooglePay,
   cibCcAmex
-})
+}, {EyeOn, EyeOff})

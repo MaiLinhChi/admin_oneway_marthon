@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, icons } from 'react'
 import { useHistory } from 'react-router-dom'
 import {
   CButton,
@@ -13,29 +13,28 @@ import {
   CInputGroupPrepend,
   CInputGroupText,
   CRow,
-  CAlert
+  CAlert,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { getDataLocal, saveDataLocal } from 'src/common/function'
+import { saveDataLocal } from 'src/common/function'
 import TomoFinanceServices from 'src/controller/API/HTTP'
+
+const { EyeOn, EyeOff } = icons;
 
 const Login = () => {
   let history = useHistory()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [processing, setProcessing] = useState(false)
+  const [visiblePass, setVisiblePass] = useState(false);
   const [error, setError] = useState(false)
   useEffect(() => {
     checkUserAuthentication()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const checkUserAuthentication = async () => {
     localStorage.removeItem('userAuth')
-    // let userAuth = await getDataLocal('userAuth')
-    // if (userAuth) {
-    //   history.push('/')
-    // }
   }
+
   const onChangeUsername = (e) => {
     let value = e.target.value
     setUsername(value)
@@ -63,6 +62,7 @@ const Login = () => {
         setProcessing(false)
       }
     } catch (error) {
+      console.log(error)
       setError('Username or password is wrong!')
       setProcessing(false)
     }
@@ -87,13 +87,19 @@ const Login = () => {
                       </CInputGroupPrepend>
                       <CInput type="text" name="username" placeholder="Username" autoComplete="username" onChange={onChangeUsername} />
                     </CInputGroup>
-                    <CInputGroup className="mb-4">
+                    <CInputGroup className="mb-4" style={{position: 'relative'}}>
                       <CInputGroupPrepend>
                         <CInputGroupText>
                           <CIcon name="cil-lock-locked" />
                         </CInputGroupText>
                       </CInputGroupPrepend>
-                      <CInput type="password" name="password" placeholder="Password" autoComplete="current-password" onChange={onChangePassword}  />
+                      <CInput type={visiblePass ? "text" : "password"} name="password" placeholder="Password" autoComplete="current-password" onChange={onChangePassword} style={{paddingRight: 30}} />
+                      <div 
+                        style={{cursor: 'pointer', position: 'absolute', right: 10, top: '45%', transform: "translateY(-50%)", zIndex: 99, userSelect: 'none'}}
+                        onClick={() => setVisiblePass(!visiblePass)}
+                      >
+                        {visiblePass ? <EyeOn width={12} height={12} /> : <EyeOff width={12} height={12} />}
+                      </div>
                     </CInputGroup>
                     {error && <CAlert color="danger">{error}</CAlert>}
                     <CRow>
