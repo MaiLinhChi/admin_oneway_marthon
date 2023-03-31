@@ -1,0 +1,33 @@
+// Here you can add other styles
+
+// style for react-draft editor
+.public-DraftStyleDefault-ltr{
+    // height: 250px;
+}
+.address-input-error {
+    position: absolute;
+    left: 0;
+    top: 40px;
+    line-height: 20px;
+    color: #ff4d4f;
+    font-size: 14px;
+  }
+.input-error {
+    position: absolute;
+    left: 0;
+    top: 40px;
+    line-height: 20px;
+    color: #ff4d4f;
+    font-size: 14px;
+}
+.deleteButton{
+    cursor: pointer;
+    &:hover{
+        color: red;
+    }
+}
+.addItemButton{
+    svg{
+        vertical-align: unset !important;
+    }
+}
