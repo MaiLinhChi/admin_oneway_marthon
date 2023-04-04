@@ -2,8 +2,10 @@ import React from 'react'
 import ReduxServices from 'src/common/redux'
 import { removeDataLocal } from 'src/common/function'
 import CIcon from '@coreui/icons-react'
+import Observer from "../common/observer";
+import { ADMIN_KEY } from "../common/constants";
 
-const _nav =  [
+const navBar =  [
   {
     _tag: 'CSidebarNavItem',
     name: 'Users',
@@ -15,17 +17,26 @@ const _nav =  [
     name: 'Marathon',
     to: '/marathon',
     icon: <CIcon name='cil-running' customClasses="c-sidebar-nav-icon"/>
+  }
+]
+
+const navUser = [
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Change password',
+    onClick: () => {
+      Observer.emit(ADMIN_KEY.CHANGE_PASSWORD);
+    },
   },
   {
     _tag: 'CSidebarNavItem',
-    name: 'Logout',
+    name: 'Log out',
     to: '/login',
     onClick: () => {
       removeDataLocal('userAuth')
       ReduxServices.resetUser()
     },
-    icon: <CIcon name={'cil-x'} customClasses="c-sidebar-nav-icon"/>
   }
 ]
 
-export default _nav
+export { navBar, navUser }

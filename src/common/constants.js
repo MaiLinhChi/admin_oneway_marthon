@@ -38,6 +38,10 @@ export const OBSERVER_KEY = {
   PAYBACK_TAI: 'PAYBACK_TAI'
 }
 
+export const ADMIN_KEY = {
+  CHANGE_PASSWORD: 'CHANGE_PASSWORD',
+}
+
 export const KEY_STORE = {
   SET_LOCALE: 'SET_LOCALE',
   SET_USER: 'SET_USER',

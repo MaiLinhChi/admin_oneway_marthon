@@ -12,7 +12,7 @@ import {
 } from '@coreui/react'
 
 // sidebar nav config
-import navigation from './_nav'
+import {navBar} from './_nav'
 
 const TheSidebar = ({sidebarShow, setSidebarShow}) => {
   return (
@@ -29,9 +29,8 @@ const TheSidebar = ({sidebarShow, setSidebarShow}) => {
         <h5 style={{margin: 0, color: '#fff', fontWeight: 'bold'}}>OneWay Option</h5>
       </CSidebarBrand>
       <CSidebarNav>
-
         <CCreateElement
-          items={navigation}
+          items={navBar}
           components={{
             CSidebarNavDivider,
             CSidebarNavDropdown,

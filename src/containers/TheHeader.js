@@ -3,7 +3,14 @@ import {
   CHeader,
   CToggler,
   CHeaderNav,
+  CDropdown,
+  CDropdownToggle,
+  CDropdownMenu,
+  CDropdownItem,
+  CSidebarNavItem,
+  CCreateElement,
 } from '@coreui/react'
+import {navUser} from './_nav'
 
 const TheHeader = ({sidebarShow, setSidebarShow}) => {
   const toggleSidebar = () => {
@@ -17,7 +24,7 @@ const TheHeader = ({sidebarShow, setSidebarShow}) => {
   }
 
   return (
-    <CHeader withSubheader>
+    <CHeader withSubheader style={{zIndex: 2}}>
       <CToggler
         inHeader
         className="ml-md-3 d-lg-none"
@@ -28,7 +35,18 @@ const TheHeader = ({sidebarShow, setSidebarShow}) => {
         className="ml-3 d-md-down-none"
         onClick={toggleSidebar}
       />
-      <CHeaderNav className="d-md-down-none mr-auto">
+      <CHeaderNav className="d-md-down-none ml-auto pr-4">
+        <CDropdown>
+          <CDropdownToggle color="secondary">Account</CDropdownToggle>
+          <CDropdownMenu>
+          <CCreateElement
+            items={navUser}
+            components={{
+              CSidebarNavItem,
+            }}
+          />
+          </CDropdownMenu>
+        </CDropdown>
       </CHeaderNav>
     </CHeader>
   )

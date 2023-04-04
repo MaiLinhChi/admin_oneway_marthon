@@ -23,8 +23,8 @@ const TableMarathon = ({label, data, searchValue, handleSearch, getData}) => {
             <h2 className="text-center">{label || "Data"} list</h2>
             <div className="d-flex justify-content-between align-items-center m-3">
             <div className="input-group w-25">
-                <input type="text" className="form-control" placeholder="Search" value={searchValue} onChange={(e) => handleSearch(e.target.value)} />
-                <button type="button" className="btn btn-info">Search</button>
+                {/* <input type="text" className="form-control" placeholder="Search" value={searchValue} onChange={(e) => handleSearch(e.target.value)} /> */}
+                {/* <button type="button" className="btn btn-info">Search</button> */}
             </div>
             <button type="button" className="btn btn-info" onClick={handleOpenModal}>Add Marathon</button>
             </div>
