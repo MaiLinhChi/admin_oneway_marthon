@@ -1,7 +1,9 @@
 import { Form, Input, Button, Space, Select } from "antd"
+import TextArea from "antd/lib/input/TextArea";
 import { useEffect, useState } from "react";
 import Loading from "src/components/Loading";
 import HTTP from "src/controller/API/HTTP";
+import TextEditor from "src/components/TextEditor";
 
 const MarathonEditModal = ({data, getData}) => {
   const { Option } = Select;
@@ -41,19 +43,19 @@ const MarathonEditModal = ({data, getData}) => {
       <Form.Item name="name" label="Name" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="description" label="description" rules={[{ required: true }]}>
-        <Input />
+      <Form.Item name="description" label="Description" rules={[{ required: true }]}>
+        <TextArea placeholder="Route map" allowClear />
       </Form.Item>
-      <Form.Item name="startTime" label="startTime" rules={[{ required: true }]}>
+      <Form.Item name="startTime" label="Start time" rules={[{ required: true }]}>
         <Input type="date" />
       </Form.Item>
-      <Form.Item name="image" label="image" rules={[{ required: true }]}>
+      <Form.Item name="image" label="Image" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="location" label="location" rules={[{ required: true }]}>
+      <Form.Item name="location" label="Location" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="type" label="type" rules={[{ required: true }]}>
+      <Form.Item name="type" label="Type" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
       <Form.Item
@@ -73,56 +75,55 @@ const MarathonEditModal = ({data, getData}) => {
               <div>
                 {fields.map(field => (
                   <>
-                    <Space key={field.key} style={{ display: 'flex', marginBottom: 8 }} align="start">
-                    <Form.Item
-                        {...field}
-                        name={[field.name, 'image']}
-                        fieldKey={[field.fieldKey, 'image']}
-                        rules={[{ required: true, message: 'image' }]}
-                      >
-                        <Input placeholder="image" />
-                      </Form.Item>
+                    <div key={field.key} align="start" >
                       <Form.Item
                         {...field}
                         name={[field.name, 'routeMap']}
                         fieldKey={[field.fieldKey, 'routeMap']}
                         rules={[{ required: true, message: 'routeMap' }]}
                       >
-                        <Input placeholder="routeMap" />
+                        <TextEditor />
                       </Form.Item>
-                      <Form.Item
-                        {...field}
-                        name={[field.name, 'distance']}
-                        fieldKey={[field.fieldKey, 'distance']}
-                        rules={[{ required: true, message: 'distance' }]}
-                      >
-                        <Input placeholder="distance" type="number" />
-                      </Form.Item>
-                      <Form.Item label="award">
-                      <Input.Group compact>
+                      <Space align="start">
                         <Form.Item
-                          name={[field.name, 'award', 'male']}
-                          noStyle
-                          rules={[{required: true, message: 'award male is required' }]}
+                          {...field}
+                          name={[field.name, 'image']}
+                          fieldKey={[field.fieldKey, 'image']}
+                          rules={[{ required: true, message: 'image' }]}
                         >
-                          <Input style={{ width: '50%' }} placeholder="award male" type="number" />
+                          <Input placeholder="image" />
                         </Form.Item>
                         <Form.Item
-                          name={[field.name, 'award', 'female']}
-                          noStyle
-                          rules={[{ required: true, message: 'award female is required' }]}
+                          {...field}
+                          name={[field.name, 'distance']}
+                          fieldKey={[field.fieldKey, 'distance']}
+                          rules={[{ required: true, message: 'distance' }]}
                         >
-                          <Input style={{ width: '50%' }} placeholder="award female" type="number" />
+                          <Input placeholder="distance" type="number" />
                         </Form.Item>
-                      </Input.Group>
-                    </Form.Item>
-                      <Button
-                        onClick={() => {
-                          remove(field.name);
-                        }}
-                        danger
-                      >Remove</Button>
-                    </Space>
+                        <Form.Item label="award">
+                          <Input.Group compact>
+                            <Form.Item
+                              name={[field.name, 'award', 'male']}
+                              noStyle
+                              rules={[{required: true, message: 'award male is required' }]}
+                            >
+                              <Input style={{ width: '50%' }} placeholder="award male" type="number" />
+                            </Form.Item>
+                            <Form.Item
+                              name={[field.name, 'award', 'female']}
+                              noStyle
+                              rules={[{ required: true, message: 'award female is required' }]}
+                            >
+                              <Input style={{ width: '50%' }} placeholder="award female" type="number" />
+                            </Form.Item>
+                          </Input.Group>
+                        </Form.Item>
+                      </Space>
+                      <Form.Item className="text-center">
+                        <Button onClick={() => {remove(field.name)}} danger>Remove</Button>
+                      </Form.Item>
+                    </div>
                     <Form.Item label="Price">
                       <Form.List name={[field.name, 'price']}>
                             {(nicknames, { add, remove }) => {
@@ -272,10 +273,10 @@ const MarathonEditModal = ({data, getData}) => {
         <Form.List name="raceKit">
           {(fields, { add, remove }) => {
             return (
-              <div>
+              <div style={{ display: "flex", flexWrap: 'wrap' }}>
                 {fields.map(field => (
                   <>
-                    <Space key={field.key} style={{ display: 'flex', marginBottom: 8 }} align="start">
+                    <Space key={field.key} style={{ display: 'flex', marginBottom: 8, width: '320px' }} align="start">
                       <Form.Item
                         {...field}
                         name={[field.name, 'image']}
@@ -302,7 +303,7 @@ const MarathonEditModal = ({data, getData}) => {
                     }}
                     block
                   >
-                    Add register group
+                    Add race kit
                   </Button>
                 </Form.Item>
               </div>
@@ -328,7 +329,7 @@ const MarathonEditModal = ({data, getData}) => {
           </Form.Item>
         </Input.Group>
       </Form.Item>
-      <Form.Item label="schedule">
+      <Form.Item label="Schedule">
         <Form.List name="schedule">
           {(fields, { add, remove }) => {
             return (
@@ -401,7 +402,7 @@ const MarathonEditModal = ({data, getData}) => {
                                       }}
                                       block
                                     >
-                                      Add price
+                                      Add detail
                                     </Button>
                                   </Form.Item>
                                 </div>
@@ -420,7 +421,7 @@ const MarathonEditModal = ({data, getData}) => {
                     }}
                     block
                   >
-                    Add Race
+                    Add schedule
                   </Button>
                 </Form.Item>
               </div>
@@ -435,7 +436,7 @@ const MarathonEditModal = ({data, getData}) => {
               <div>
                 {fields.map(field => (
                   <>
-                    <Space key={field.key} style={{ display: 'flex', marginBottom: 8 }} align="start">
+                    <div key={field.key} align="start" style={{width: '100%'}}>
                       <Form.Item
                         {...field}
                         name={[field.name, 'title']}
@@ -450,15 +451,15 @@ const MarathonEditModal = ({data, getData}) => {
                         fieldKey={[field.fieldKey, 'description']}
                         rules={[{ required: true, message: 'description' }]}
                       >
-                        <Input placeholder="description" />
+                        <TextEditor />
                       </Form.Item>
-                      <Button
-                        onClick={() => {
-                          remove(field.name);
-                        }}
-                        danger
-                      >Remove</Button>
-                    </Space>
+                      <Form.Item className="text-center">
+                        <Button
+                          onClick={() => {
+                            remove(field.name);
+                          }}danger >Remove</Button>
+                      </Form.Item>
+                    </div>
                   </>
                 ))}
 
@@ -470,7 +471,7 @@ const MarathonEditModal = ({data, getData}) => {
                     }}
                     block
                   >
-                    Add register group
+                    Add regulation
                   </Button>
                 </Form.Item>
               </div>

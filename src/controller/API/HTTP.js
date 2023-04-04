@@ -40,7 +40,19 @@ export default class HTTP {
     return this.fetchData(url, REQUEST_TYPE.POST, null, data);
   }
 
+  /**
+   * [PUT]
+   * Edit marathon
+   */
   static async editMarathon(url, data = {}) {
+    return this.fetchData(url, REQUEST_TYPE.PUT, null, data);
+  }
+
+  /**
+   * [PUT]
+   * Change password
+   */
+  static async changePassword(url, data = {}) {
     return this.fetchData(url, REQUEST_TYPE.PUT, null, data);
   }
 
