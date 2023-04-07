@@ -3,7 +3,7 @@ import { useState } from "react";
 import Loading from "src/components/Loading";
 import HTTP from "src/controller/API/HTTP";
 
-const MarathonModal = ({getData}) => {
+const AddMarathonModal = ({getData, closeModal}) => {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm();
   const onFinish = async (values) => {
@@ -13,6 +13,7 @@ const MarathonModal = ({getData}) => {
       alert("Add marathons success")
       form.resetFields();
       getData();
+      closeModal();
     } catch (error) {
       alert(error.message)
     }
@@ -181,4 +182,4 @@ const MarathonModal = ({getData}) => {
   )
 }
 
-export default MarathonModal
+export default AddMarathonModal

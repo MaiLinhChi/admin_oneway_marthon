@@ -5,7 +5,7 @@ import Loading from "src/components/Loading";
 import HTTP from "src/controller/API/HTTP";
 import TextEditor from "src/components/TextEditor";
 
-const MarathonEditModal = ({data, getData}) => {
+const EditMarathonModal = ({data, getData, closeModal}) => {
   const { Option } = Select;
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm();
@@ -16,6 +16,7 @@ const MarathonEditModal = ({data, getData}) => {
       alert("Edit marathons success")
       form.resetFields();
       getData();
+      closeModal();
     } catch (error) {
       alert(error.message)
     }
@@ -40,28 +41,29 @@ const MarathonEditModal = ({data, getData}) => {
   })
   return (
     <Form name="dynamic_form_nest_item" onFinish={onFinish} autoComplete="off" form={form}>
-      <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+      <Form.Item name="name" label="Name" rules={[{ required: true }]} labelCol={{span: 24}}>
         <Input />
       </Form.Item>
-      <Form.Item name="description" label="Description" rules={[{ required: true }]}>
+      <Form.Item name="description" label="Description" rules={[{ required: true }]} labelCol={{span: 24}}>
         <TextArea placeholder="Route map" allowClear />
       </Form.Item>
-      <Form.Item name="startTime" label="Start time" rules={[{ required: true }]}>
+      <Form.Item name="startTime" label="Start time" rules={[{ required: true }]} labelCol={{span: 24}}>
         <Input type="date" />
       </Form.Item>
-      <Form.Item name="image" label="Image" rules={[{ required: true }]}>
+      <Form.Item name="image" label="Image" rules={[{ required: true }]} labelCol={{span: 24}}>
         <Input />
       </Form.Item>
-      <Form.Item name="location" label="Location" rules={[{ required: true }]}>
+      <Form.Item name="location" label="Location" rules={[{ required: true }]} labelCol={{span: 24}}>
         <Input />
       </Form.Item>
-      <Form.Item name="type" label="Type" rules={[{ required: true }]}>
+      <Form.Item name="type" label="Type" rules={[{ required: true }]} labelCol={{span: 24}}>
         <Input />
       </Form.Item>
       <Form.Item
         name="status"
         label="Status"
         rules={[{ required: true, message: 'Please select your favourite colors!' }]}
+        labelCol={{span: 24}}
       >
         <Select>
           <Option value="active">Active</Option>
@@ -81,6 +83,8 @@ const MarathonEditModal = ({data, getData}) => {
                         name={[field.name, 'routeMap']}
                         fieldKey={[field.fieldKey, 'routeMap']}
                         rules={[{ required: true, message: 'routeMap' }]}
+                        labelCol={{span: 24}}
+                        label="Route map"
                       >
                         <TextEditor />
                       </Form.Item>
@@ -90,6 +94,8 @@ const MarathonEditModal = ({data, getData}) => {
                           name={[field.name, 'image']}
                           fieldKey={[field.fieldKey, 'image']}
                           rules={[{ required: true, message: 'image' }]}
+                          label="Image"
+                          labelCol={{span: 24}}
                         >
                           <Input placeholder="image" />
                         </Form.Item>
@@ -98,10 +104,12 @@ const MarathonEditModal = ({data, getData}) => {
                           name={[field.name, 'distance']}
                           fieldKey={[field.fieldKey, 'distance']}
                           rules={[{ required: true, message: 'distance' }]}
+                          label="Distance"
+                          labelCol={{span: 24}}
                         >
                           <Input placeholder="distance" type="number" />
                         </Form.Item>
-                        <Form.Item label="award">
+                        <Form.Item label="award" labelCol={{span: 24}}>
                           <Input.Group compact>
                             <Form.Item
                               name={[field.name, 'award', 'male']}
@@ -136,6 +144,8 @@ const MarathonEditModal = ({data, getData}) => {
                                         name={[nickname.name, 'name']}
                                         fieldKey={[nickname.fieldKey, 'name']}
                                         rules={[{ required: true, message: 'Missing name' }]}
+                                        labelCol={{span: 24}}
+                                        label="Name"
                                       >
                                         <Input placeholder="name" />
                                       </Form.Item>
@@ -144,6 +154,8 @@ const MarathonEditModal = ({data, getData}) => {
                                         name={[nickname.name, 'startSell']}
                                         fieldKey={[nickname.fieldKey, 'startSell']}
                                         rules={[{ required: true, message: 'Missing start sell' }]}
+                                        labelCol={{span: 24}}
+                                        label="End sell"
                                       >
                                         <Input placeholder="startSell" type="date" />
                                       </Form.Item>
@@ -152,6 +164,8 @@ const MarathonEditModal = ({data, getData}) => {
                                         name={[nickname.name, 'individual']}
                                         fieldKey={[nickname.fieldKey, 'individual']}
                                         rules={[{ required: true, message: 'Missing individual' }]}
+                                        labelCol={{span: 24}}
+                                        label="Individual"
                                       >
                                         <Input placeholder="individual" type="number" />
                                       </Form.Item>
@@ -160,6 +174,8 @@ const MarathonEditModal = ({data, getData}) => {
                                         name={[nickname.name, 'group']}
                                         fieldKey={[nickname.fieldKey, 'group']}
                                         rules={[{ required: true, message: 'Missing group' }]}
+                                        labelCol={{span: 24}}
+                                        label="Group"
                                       >
                                         <Input placeholder="group" type="number" />
                                       </Form.Item>
@@ -223,6 +239,8 @@ const MarathonEditModal = ({data, getData}) => {
                             name={[field.name, 'numberPerson', 'from']}
                             noStyle
                             rules={[{required: true, message: 'from is required' }]}
+                            label="From"
+                            labelCol={{span: 24}}
                           >
                             <Input style={{ width: '50%' }} placeholder="from" type="number" />
                           </Form.Item>
@@ -230,6 +248,8 @@ const MarathonEditModal = ({data, getData}) => {
                             name={[field.name, 'numberPerson', 'to']}
                             noStyle
                             rules={[{ required: true, message: 'to is required' }]}
+                            label="To"
+                            labelCol={{span: 24}}
                           >
                             <Input style={{ width: '50%' }} placeholder="to" type="number" />
                           </Form.Item>
@@ -269,7 +289,7 @@ const MarathonEditModal = ({data, getData}) => {
           }}
         </Form.List>
       </Form.Item>
-      <Form.Item label="Racekit">
+      <Form.Item label="Racekit" labelCol={{span: 24}}>
         <Form.List name="raceKit">
           {(fields, { add, remove }) => {
             return (
@@ -311,7 +331,7 @@ const MarathonEditModal = ({data, getData}) => {
           }}
         </Form.List>
       </Form.Item>
-      <Form.Item label="Service">
+      <Form.Item label="Service" labelCol={{span: 24}}>
         <Input.Group compact>
           <Form.Item
             name={['service', 'image']}
@@ -329,7 +349,7 @@ const MarathonEditModal = ({data, getData}) => {
           </Form.Item>
         </Input.Group>
       </Form.Item>
-      <Form.Item label="Schedule">
+      <Form.Item label="Schedule" labelCol={{span: 24}}>
         <Form.List name="schedule">
           {(fields, { add, remove }) => {
             return (
@@ -488,4 +508,4 @@ const MarathonEditModal = ({data, getData}) => {
   )
 }
 
-export default MarathonEditModal
+export default EditMarathonModal
