@@ -56,6 +56,22 @@ export default class HTTP {
     return this.fetchData(url, REQUEST_TYPE.PUT, null, data);
   }
 
+  /**
+   * [GET]
+   * Get bib
+   */
+  static async getBib(url, data = {}) {
+    return this.fetchData(url, REQUEST_TYPE.GET, data);
+  }
+
+  /**
+   * [POST]
+   * Admin login
+   */
+  static async addBib(url, data = {}) {
+    return this.fetchData(url, REQUEST_TYPE.POST, null, data);
+  }
+
   static fetchData(apiUrl, method, params, postData) {
     return new Promise(async (resolve, reject) => {
 

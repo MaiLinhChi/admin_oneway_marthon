@@ -17,6 +17,12 @@ const navBar =  [
     name: 'Marathon',
     to: '/marathon',
     icon: <CIcon name='cil-running' customClasses="c-sidebar-nav-icon"/>
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Bib',
+    to: '/bib',
+    icon: <CIcon name='cilMoney' customClasses="c-sidebar-nav-icon"/>
   }
 ]
 

@@ -42,6 +42,14 @@ export const ADMIN_KEY = {
   CHANGE_PASSWORD: 'CHANGE_PASSWORD',
 }
 
+export const BIB_KEY = {
+  BIB: "BIB"
+}
+
+export const MARATHON_KEY = {
+  MARATHON: "MARATHON",
+}
+
 export const KEY_STORE = {
   SET_LOCALE: 'SET_LOCALE',
   SET_USER: 'SET_USER',
